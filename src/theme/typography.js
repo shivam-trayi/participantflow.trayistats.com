@@ -1,0 +1,1 @@
+export const typography = { fontFamily: 'Poppins', sans-serif, fontSize: '16px' };

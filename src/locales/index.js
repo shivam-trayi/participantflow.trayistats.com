@@ -51,7 +51,7 @@ import at from './at.json';
 import hr from './hr.json';
 import ec from './ec.json';
 import ses from './ses.json';
-import { getCountryMetadata } from '../common/countryLangIdMapping';
+import { getCountryMetadata } from '../utils/countryLangIdMapping';
 
 const translations = {
   en, hi, es, ar, de, fr, pt, zh, ru,

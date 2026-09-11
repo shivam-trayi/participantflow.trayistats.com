@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+﻿import { createSlice } from '@reduxjs/toolkit';
 import {
     createParticipant,
     saveUserAnswer,
@@ -7,7 +7,7 @@ import {
     createBrowserData,
     welcomeMessage,
     logAttentionCheck
-} from '../../common/api/apiService';
+} from '../../services/api/apiService';
 import { startSpinner, endSpinner } from "./loaderSlice";
 import { setMessage } from "./alertSlice";
 import Cookies from 'universal-cookie';
@@ -198,3 +198,4 @@ export const logAttentionCheckResponse = (body) => {
 }
 
 export default participantSlice.reducer;
+

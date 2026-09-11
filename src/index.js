@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import errorLog from './common/utils/logger';
+import errorLog from './utils/logger';
 const theme = createTheme({
   palette: {
     primary: {
