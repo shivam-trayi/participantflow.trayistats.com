@@ -1,3 +1,4 @@
-import { colors } from './colors';
-import { typography } from './typography';
-export const theme = { colors, typography };
+﻿const colors = require('./colors');
+const typography = require('./typography');
+
+module.exports = { colors, typography };

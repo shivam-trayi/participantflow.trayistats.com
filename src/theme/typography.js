@@ -1,1 +1,6 @@
-export const typography = { fontFamily: 'Poppins', sans-serif, fontSize: '16px' };
+﻿const typography = {
+  fontFamily: {
+    sans: ['Poppins', 'sans-serif'],
+  }
+};
+module.exports = typography;

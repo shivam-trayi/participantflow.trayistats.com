@@ -1,4 +1,7 @@
 ﻿/** @type {import('tailwindcss').Config} */
+const colors = require('./src/theme/colors');
+const typography = require('./src/theme/typography');
+
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -6,17 +9,8 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        primary: '#007bff',
-        secondary: '#6c757d',
-        dark: {
-          DEFAULT: '#121212',
-          paper: '#1e1e1e'
-        }
-      },
-      fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
-      }
+      colors: colors,
+      fontFamily: typography.fontFamily
     },
   },
   plugins: [],
