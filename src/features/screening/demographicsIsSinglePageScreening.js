@@ -449,6 +449,30 @@ import SurveyQuestions from './ui/SurveyQuestions';
 import { COUNTRY_CODE, ZIP_REGEX, ZIP_EXAMPLES } from '../../utils/countrylangMapping';
 import '../screening/ui/multiselectDropdown.css';  
 import { getTranslationsByCountryId } from '../../locales';
+import useBotDetector from '../../hooks/useBotDetector';
+
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
+import FormControl from '@mui/material/FormControl';
+import CircularProgress from '@mui/material/CircularProgress';
+import TextField from '@mui/material/TextField';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import LinearProgress from '@mui/material/LinearProgress';
+
  
 // --- New Design Styled Components ---
 const StyledCard = styled(Card)(({ theme }) => ({
