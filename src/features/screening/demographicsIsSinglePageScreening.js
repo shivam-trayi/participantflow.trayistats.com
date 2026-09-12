@@ -166,7 +166,6 @@ const DemographicsIsSinglePageScreening = () => {
     const allDemos = useSelector(state => state.participant.demographicsData);
     const [userAnswer, setUserAnswer] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
-    // unused state
     const [canScrollMore, setCanScrollMore] = useState(false);
     const optionsContainerRef = useRef(null);
     
