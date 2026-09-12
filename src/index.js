@@ -1,4 +1,5 @@
-﻿import React from 'react';
+import { applyTheme } from './theme/applyTheme';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -33,6 +34,8 @@ window.onunhandledrejection = function (event) {
   errorLog(event.reason, { source: 'FrontendUserRejection' });
 };
 
+
+applyTheme();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

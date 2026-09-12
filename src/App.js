@@ -1,4 +1,5 @@
-﻿import React, { Suspense } from 'react';
+﻿import React, { Suspense, useEffect } from 'react';
+import { applyTheme } from './theme/applyTheme';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import MyLoader from './components/loader/loader';
@@ -13,6 +14,9 @@ const QuotaFailPage = React.lazy(() => import('./pages/quotafail/QuotaFailPage')
 const SecurityFailPage = React.lazy(() => import('./pages/securityfail/SecurityFailPage'));
 
 function App() {
+  useEffect(() => {
+    applyTheme();
+  });
   const loading = useSelector(state => state.spinner.loading);
   const alertMessage = useSelector(state => state.alert);
 

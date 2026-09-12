@@ -1,445 +1,11 @@
-﻿// import React, { useState, useRef, useEffect, useMemo } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { checkUserQuotaAction, logAttentionCheckResponse } from '../../store/slices/participantSlice';
-// import { analyzeIPRanker } from '../../utils/ipRanker';
-// import { startSpinner } from '../../store/slices/loaderSlice';
-// import DragAndDropGame from './ui/DragAndDropGame';
-// import SurveyQuestions from './ui/SurveyQuestions';
-// import { COUNTRY_CODE, ZIP_REGEX, ZIP_EXAMPLES } from '../../utils/countrylangMapping';
-// import useBotDetector from '../../hooks/useBotDetector';
-// import { getTranslationsByCountryId } from '../../locales';
-// import Button from '../../components/ui/Button';
-// import OptionCard from '../../components/ui/OptionCard';
- 
-// const validateZipByCountry = (zip, langId) => {
-//   const countryCode = COUNTRY_CODE[langId] || null;
-//   const regex = ZIP_REGEX[countryCode];
-//   if (!regex) return true;
-//   return regex.test(zip);
-// }
- 
-
-// const DemographicsIsSinglePageScreening = () => {
-//     const dispatch = useDispatch();
-//     const allDemos = useSelector(state => state.participant.demographicsData);
-//     const [userAnswer, setUserAnswer] = useState({});
-//     const [errors, setErrors] = useState({});
-//     const [isCopied, setIsCopied] = useState({});
-//     const [submissionAlert, setSubmissionAlert] = useState(false);
-//     const [isSubmitting, setIsSubmitting] = useState(false);
-//     const [isGameActive, setIsGameActive] = useState(false);
-//     const [smartFilterResult, setSmartFilterResult] = useState(-1);
-//     const [isIPRankerEnabled, setIsIPRankerEnabled] = useState(false);
-//     const [showDemoUID, setShowDemoUID] = useState(true);
-//     const [surveyDone, setSurveyDone] = useState(false);
-//     const [surveyResults, setSurveyResults] = useState(null);
-//     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-//     const questionRefs = useRef({});
-//     const { getBotSignals, onKeystroke, onInputChange, honeypotProps } = useBotDetector();
-//     const rawCountryId = useSelector(
-//         state => state.participant.demographicsData.countryCode
-//     );
-//     const translations = useMemo(
-//         () => getTranslationsByCountryId(rawCountryId),
-//         [rawCountryId]
-//     );
- 
-//     const createTimeout = (ms) =>
-//         new Promise((_, reject) =>
-//             setTimeout(() => reject(new Error("Fingerprint request timed out")), ms)
-//         );
- 
-//     useEffect(() => {
-//         if (allDemos?.isDemoEnabled && allDemos?.isSmartRespFilterEnabled === 1) {
-//             setIsGameActive(true);
-//         }
-//         if (allDemos?.isDemoEnabled && allDemos?.isIpRankerAnalysisEnabled === 1) {
-//             setIsIPRankerEnabled(true);
-//         }
-//     }, [allDemos]);
-
-    
-//     useEffect(() => {
-//         setUserAnswer({});
-//         setErrors({});
-//         setIsCopied({});
-//         setSurveyDone(false);
-//         setSurveyResults(null);
-//     }, [allDemos]);
-//     const handleGameComplete = (data) => {
-//         setSmartFilterResult(data.finalScore);
-//         setIsGameActive(false);
-//     };
-
-//     const handleSurveyComplete = (results) => {
-//         console.log('Survey Results:', results);
-//         setSurveyResults(results);
-//         setSurveyDone(true);
-//         dispatch(logAttentionCheckResponse({...results,PID:allDemos.PID,CookieId:allDemos.cookieId}))  
-//     };
- 
-//     const setAnswerForQ = (qid, value) => {
-//         setUserAnswer(prev => ({ ...prev, [qid]: value }));
-//         if (errors[qid]) {
-//             setErrors(prev => ({ ...prev, [qid]: false }));
-//         }
-//     };
- 
-//     const handleBulkSubmit = async () => {
-//         let newErrors = {};
-//         let firstErrorQId = null;
-//         const userResponse = [{
-//             bodyData: [],
-//             behiviouralData:{}
-//         }]
-//         allDemos.allDemos.forEach(q => {
-//             const val = userAnswer[q.QId];
-//             if (!val || val === "" || (Array.isArray(val) && val.length === 0)) {
-//                 newErrors[q.QId] = translations?.errors?.required || "This question is required";
-//                 if (!firstErrorQId) firstErrorQId = q.QId;
-//             } else if (q?.IsZipValidate === 1 || q?.DemoId == 3) {
-//                 const globalCountryCode = q?.lang_code || rawCountryId;
-//                 const isValid = validateZipByCountry(val, globalCountryCode);
-//                 if (!isValid) {
-//                     const countryCode = COUNTRY_CODE[globalCountryCode] || null;
-//                     const example = ZIP_EXAMPLES[countryCode];
-//                     const invalidZipMsg = translations?.errors?.invalidZip || "Invalid ZIP format";
-//                     newErrors[q.QId] = example ? `${invalidZipMsg} (e.g. ${example})` : invalidZipMsg;
-//                     if (!firstErrorQId) firstErrorQId = q.QId;
-//                 }
-//             } else if (q.queryType === "range" || q.queryType === 5) {
-//                 if (!/^\d+$/.test(val)) {
-//                     newErrors[q.QId] = translations?.errors?.onlyNumbers || "Only numbers are allowed.";
-//                     if (!firstErrorQId) firstErrorQId = q.QId;
-//                 } else {
-//                     const numVal = parseInt(val, 10);
-//                     if (numVal < 18 || numVal > 99) {
-//                         newErrors[q.QId] = translations?.errors?.range || "Age must be between 18 and 99.";
-//                         if (!firstErrorQId) firstErrorQId = q.QId;
-//                     }
-//                 }
-//             }
-//         });
- 
-//         if (Object.keys(newErrors).length > 0) {
-//             setErrors(newErrors);
-//             setSubmissionAlert(true);
-//             if (firstErrorQId) {
-//                 const node = questionRefs.current[firstErrorQId];
-//                 if (node) {
-//                     node.scrollIntoView({ behavior: "smooth", block: "center" });
-//                     const input = node.querySelector('input,select,textarea');
-//                     if (input) input.focus();
-//                 }
-//             }
-//             return;
-//         }
- 
-//         setErrors({});
-//         setIsSubmitting(true);
- 
-//         try {
-//             const allQuestions = allDemos.allDemos;
-//             let results = [];
- 
-//             for (let i = 0; i < allQuestions.length; i++) {
-//                 const currentQuestionData = allQuestions[i];
-//                 let userGivenAnswer = userAnswer[currentQuestionData.QId];
-//                 let isCorrect = false;
-//                 let userAnserText = [];
-//                 if ((currentQuestionData.queryType == "dropdown") || currentQuestionData.queryType == 1) {
-//                     isCorrect = currentQuestionData.correctAnswerCode.includes(+userGivenAnswer);
-//                     let opt = currentQuestionData.QuestionAnswerCodes.find(x => String(x.OId) == String(userGivenAnswer));
-//                     if (opt) userAnserText.push(opt.optionText);
-//                     userGivenAnswer = [userGivenAnswer];
- 
-//                 } else if ((currentQuestionData.queryType == "radio") || (currentQuestionData.queryType == 2)) {
-//                     isCorrect = currentQuestionData.correctAnswerCode.includes(+userGivenAnswer);
-//                     let opt = currentQuestionData.QuestionAnswerCodes.find(x => String(x.OId) == String(userGivenAnswer));
-//                     if (opt) userAnserText.push(opt.optionText);
-//                     userGivenAnswer = [userGivenAnswer];
- 
-//                 } else if ((currentQuestionData.queryType == "multiselect") || (currentQuestionData.queryType == 4)) {
-//                     if (typeof userGivenAnswer == 'string') {
-//                         userGivenAnswer = userGivenAnswer.split(",").map(Number);
-//                     } else if (!Array.isArray(userGivenAnswer)) {
-//                         userGivenAnswer = [Number(userGivenAnswer)];
-//                     }
-//                     isCorrect = userGivenAnswer.some(v => currentQuestionData.correctAnswerCode.includes(v));
-//                     for (let key of userGivenAnswer) {
-//                         let opt = currentQuestionData.QuestionAnswerCodes.find(x => String(x.OId) == String(key));
-//                         if (opt) userAnserText.push(opt.optionText);
-//                     }
- 
-//                 } else if ((currentQuestionData.queryType == "range") || (currentQuestionData.queryType == 5)) {
-//                     isCorrect = currentQuestionData.correctAnswerCode.includes(+userGivenAnswer);
-//                     userAnserText.push(userGivenAnswer);
-//                     userGivenAnswer = [userGivenAnswer];
- 
-//                 } else if ((currentQuestionData.queryType == "text") || (currentQuestionData.queryType == 3)) {
-//                     if (currentQuestionData?.IsZipValidate == 1 && currentQuestionData.QId != 669) {
-//                         if (currentQuestionData.correctAnswerCode.length) {
-//                             isCorrect = currentQuestionData.correctAnswerCode.includes(userGivenAnswer);
-//                         } else {
-//                             isCorrect = true;
-//                         }
-//                     } else {
-//                         isCorrect = true;
-//                     }
-//                     userAnserText.push(userGivenAnswer);
-//                     userGivenAnswer = [userGivenAnswer];
-//                 }
- 
-//                 results.push({ userGivenAnswer, userAnserText, isCorrect});
-//             }
- 
-//             const botSignals = getBotSignals();
-//             for (let i = 0; i < allQuestions.length; i++) {
-//                 const currentQuestionData = allQuestions[i];
-//                 const { userGivenAnswer, userAnserText, isCorrect } = results[i];
-//                 userResponse[0].bodyData.push({
-//                     PID: allDemos.PID,
-//                     userAnswer: userGivenAnswer,
-//                     QId: currentQuestionData.QId,
-//                     isCorrect: isCorrect,
-//                     smartFilterResult,
-//                     userAnswerText: userAnserText,
-//                     isCopied: isCopied[currentQuestionData.QId] ? 1 : 0,
-//                     isPasted: isCopied[currentQuestionData.QId] ? 1 : 0,
-//                     botSignals
-//                 })
-//             }
-  
-//             let behiviouralData = null;
-//             localStorage.removeItem('ipranker_cache');
-//             let timeTakenInAnalysis = new Date().getTime();
-//             let ipRankerResult = { success: false };
-//             if (isIPRankerEnabled) {
-//                 dispatch(startSpinner());
-//                 try {
-//                     ipRankerResult = await Promise.race([
-//                         analyzeIPRanker(),
-//                         createTimeout(7000)
-//                     ]);
-//                 } catch (error) {
-//                     ipRankerResult.success = false;
-//                 }
-//                 if (ipRankerResult.success) behiviouralData = ipRankerResult.payload;
-//             }
-//             timeTakenInAnalysis = new Date().getTime() - timeTakenInAnalysis;
-//              userResponse[0].behiviouralData={
-//                 behiviouralData,
-//                 timeTakenInAnalysis,
-//                 iprankerResponse: ipRankerResult.success,
-//                 botSignals
-//             }
-
-//             userResponse[0].surveyData = surveyResults;
-
-//             dispatch(checkUserQuotaAction(userResponse));
- 
-//             setShowDemoUID(false);
-//             setIsSubmitting(false);
- 
-//         } catch (error) {
-//             console.error("Submission Error", error);
-//             setIsSubmitting(false);
-//         }
-//     };
- 
-
-//     // Derived state - all defined BEFORE any conditional return
-//     const q = allDemos?.allDemos ? allDemos.allDemos[currentQuestionIndex] : null;
-//     const progressPercentage = allDemos?.allDemos
-//         ? ((currentQuestionIndex + 1) / allDemos.allDemos.length) * 100
-//         : 0;
-//     const currentAnswer = q ? (userAnswer[q.QId] || "") : "";
-
-//     const handleNext = () => {
-//         if (!q) return;
-//         const val = userAnswer[q.QId];
-//         let hasError = false;
-//         let errMsg = "";
-
-//         if (!val || val === "" || (Array.isArray(val) && val.length === 0)) {
-//             hasError = true;
-//             errMsg = translations?.errors?.required || "This question is required";
-//         } else if (q?.IsZipValidate === 1 || q?.DemoId == 3) {
-//             const globalCountryCode = q?.lang_code || rawCountryId;
-//             const isValid = validateZipByCountry(val, globalCountryCode);
-//             if (!isValid) {
-//                 const countryCode = COUNTRY_CODE[globalCountryCode] || null;
-//                 const example = ZIP_EXAMPLES[countryCode];
-//                 const msg = translations?.errors?.invalidZip || "Invalid ZIP format";
-//                 hasError = true;
-//                 errMsg = example ? (msg + " (e.g. " + example + ")") : msg;
-//             }
-//         } else if (q.queryType === "range" || q.queryType === 5) {
-//             if (!/^d+$/.test(val)) {
-//                 hasError = true;
-//                 errMsg = translations?.errors?.onlyNumbers || "Only numbers are allowed.";
-//             } else {
-//                 const numVal = parseInt(val, 10);
-//                 if (numVal < 18 || numVal > 99) {
-//                     hasError = true;
-//                     errMsg = translations?.errors?.range || "Age must be between 18 and 99.";
-//                 }
-//             }
-//         }
-
-//         if (hasError) {
-//             setErrors(prev => ({ ...prev, [q.QId]: errMsg }));
-//             return;
-//         }
-
-//         setErrors(prev => ({ ...prev, [q.QId]: undefined }));
-
-//         if (currentQuestionIndex < allDemos.allDemos.length - 1) {
-//             setCurrentQuestionIndex(prev => prev + 1);
-//         } else {
-//             handleBulkSubmit();
-//         }
-//     };
-
-//     const toggleMultiSelect = (id) => {
-//         let arr = currentAnswer ? String(currentAnswer).split(",") : [];
-//         if (arr.includes(String(id))) {
-//             arr = arr.filter(x => x !== String(id));
-//         } else {
-//             arr.push(String(id));
-//         }
-//         if (q) setAnswerForQ(q.QId, arr.join(","));
-//     };
-
-//     // Conditional returns AFTER all variables are defined
-//     if (isGameActive) {
-//         return (
-//             <div className="min-h-screen bg-background flex items-center justify-center">
-//                 <DragAndDropGame onComplete={handleGameComplete} />
-//             </div>
-//         );
-//     }
-
-//     if (allDemos?.isDemoEnabled && allDemos?.IsAttentionCheckEnabled == 1 && !surveyDone) {
-//         return <SurveyQuestions onComplete={handleSurveyComplete} />;
-//     }
-
-//     if (!q) return (
-//         <div className="min-h-screen bg-background flex items-center justify-center text-textPrimary">
-//             Loading...
-//         </div>
-//     );
-
-//     return (
-//         <div className="min-h-screen bg-background text-textPrimary flex flex-col font-sans">
-
-//             {/* Top Progress Bar */}
-//             <div className="w-full bg-paper h-1.5">
-//                 <div
-//                     className="bg-primary h-1.5 transition-all duration-500"
-//                     style={{ width: progressPercentage + "%" }}
-//                 />
-//             </div>
-
-//             <div className="flex-1 flex flex-col max-w-2xl w-full mx-auto px-6 py-8">
-
-//                 {/* Step Counter + Back */}
-//                 <div className="flex items-center justify-between mb-8">
-//                     {currentQuestionIndex > 0 ? (
-//                         <button
-//                             onClick={() => setCurrentQuestionIndex(p => p - 1)}
-//                             className="flex items-center gap-1 text-textSecondary hover:text-textPrimary transition-colors text-sm"
-//                         >
-//                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-//                             </svg>
-//                             Back
-//                         </button>
-//                     ) : <div />}
-//                     <span className="text-sm text-textSecondary">
-//                         {currentQuestionIndex + 1} of {allDemos.allDemos.length}
-//                     </span>
-//                 </div>
-
-//                 {/* Question Text */}
-//                 <h2 className="text-2xl md:text-3xl font-bold mb-8 leading-snug">
-//                     {q.questionText}
-//                 </h2>
-
-//                 {/* Answer Options */}
-//                 <div className="flex flex-col gap-3 mb-6">
-//                     {(q.queryType === "multi" || q.queryType === 2) ? (
-//                         q.QuestionAnswerCodes.map(opt => {
-//                             const isSel = (currentAnswer ? String(currentAnswer).split(",") : []).includes(String(opt.OId));
-//                             return (
-//                                 <OptionCard
-//                                     key={opt.OId}
-//                                     type="checkbox"
-//                                     label={opt.optionText}
-//                                     isSelected={isSel}
-//                                     onClick={() => toggleMultiSelect(opt.OId)}
-//                                 />
-//                             );
-//                         })
-//                     ) : (q.queryType === "radio" || q.queryType === 1 || q.queryType === 6 || q.queryType === "dropdown") ? (
-//                         q.QuestionAnswerCodes.map(opt => {
-//                             const isSel = String(currentAnswer) === String(opt.OId);
-//                             return (
-//                                 <OptionCard
-//                                     key={opt.OId}
-//                                     type="radio"
-//                                     label={opt.optionText}
-//                                     isSelected={isSel}
-//                                     onClick={() => setAnswerForQ(q.QId, String(opt.OId))}
-//                                 />
-//                             );
-//                         })
-//                     ) : (
-//                         <input
-//                             type={q.queryType === "range" || q.queryType === 5 ? "number" : "text"}
-//                             value={currentAnswer}
-//                             onChange={(e) => setAnswerForQ(q.QId, e.target.value)}
-//                             onKeyDown={(e) => { if (onKeystroke) onKeystroke(e); }}
-//                             onPaste={(e) => {
-//                                 if (onInputChange) onInputChange();
-//                                 if (q?.IsZipValidate === 1 || q?.DemoId == 3) e.preventDefault();
-//                             }}
-//                             onCopy={(e) => {
-//                                 if (q?.IsZipValidate === 1 || q?.DemoId == 3) e.preventDefault();
-//                             }}
-//                             className="w-full bg-paper text-textPrimary px-5 py-4 rounded-xl border-2 border-transparent focus:border-primary outline-none transition-all placeholder-textSecondary"
-//                             placeholder="Type your answer here..."
-//                         />
-//                     )}
-
-//                     {errors[q.QId] && (
-//                         <p className="text-red-400 text-sm">{errors[q.QId]}</p>
-//                     )}
-//                 </div>
-
-//                 <div className="flex-1" />
-
-//                 {/* Next / Submit Button */}
-//                 <div className="sticky bottom-4 pt-4">
-//                     <Button onClick={handleNext} disabled={isSubmitting}>
-//                         {isSubmitting
-//                             ? "Processing..."
-//                             : currentQuestionIndex === allDemos.allDemos.length - 1
-//                                 ? (translations?.buttons?.submit || "Submit")
-//                                 : "Next"}
-//                     </Button>
-//                 </div>
-//             </div>
-
-//             <input {...honeypotProps} />
-//         </div>
-//     );
-// }
-
-// export default DemographicsIsSinglePageScreening;
-
-
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { themeClasses } from '../../theme/themeConfig';
+import { ChevronDown, ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
+import Button from '../../components/button/Button';
+import OptionCard from '../../components/optionCard/OptionCard';
+import ProgressBar from '../../components/progressBar/ProgressBar';
+import SearchBox from '../../components/searchBox/SearchBox';
+import DataNotFound from '../../components/dataNotFound/DataNotFound';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkUserQuotaAction, logAttentionCheckResponse } from "../../store/slices/participantSlice"
 import { analyzeIPRanker } from "../../utils/ipRanker";
@@ -450,59 +16,12 @@ import { COUNTRY_CODE, ZIP_REGEX, ZIP_EXAMPLES } from '../../utils/countrylangMa
 import '../screening/ui/multiselectDropdown.css';  
 import { getTranslationsByCountryId } from '../../locales';
 import useBotDetector from '../../hooks/useBotDetector';
-
-import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import Typography from '@mui/material/Typography';
-import FormControl from '@mui/material/FormControl';
-import CircularProgress from '@mui/material/CircularProgress';
-import TextField from '@mui/material/TextField';
-import { styled } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import LinearProgress from '@mui/material/LinearProgress';
 
- 
-// --- New Design Styled Components ---
-const StyledCard = styled(Card)(({ theme }) => ({
-    width: '100%',
-    borderRadius: '16px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-    border: '1px solid #f0f0f0',
-    overflow: 'visible !important',
-    [theme.breakpoints.down('md')]: {
-        margin: theme.spacing(2)
-    },
-    [theme.breakpoints.down('sm')]: {
-        borderRadius: '12px',
-        margin: theme.spacing(1)
-    }
-}));
- 
-const QuestionContainer = styled(Box)(({ theme }) => ({
-    marginBottom: '20px',
-    paddingBottom: '2px',
-    borderBottom: `1px solid ${theme.palette.divider}66`,
-    [theme.breakpoints.down('sm')]: {
-        marginBottom: '20px',
-        paddingBottom: '2px',
-    },
-    '&:last-child': {
-        borderBottom: 'none',
-        marginBottom: 0
-    }
-}));
+import useDebounce from '../../hooks/useDebounce';
+
 
 const validateZipByCountry = (zip, langId) => {
   const countryCode = COUNTRY_CODE[langId] || null;
@@ -510,75 +29,148 @@ const validateZipByCountry = (zip, langId) => {
   if (!regex) return true;
   return regex.test(zip);
 }
- 
-const QuestionText = styled(Typography)(({ theme }) => ({
-    fontWeight: 600,
-    fontSize: '1.1rem',
-    wordBreak: 'break-word',
-    [theme.breakpoints.down('sm')]: {
-        fontSize: '1rem',
-    },
-    marginBottom: theme.spacing(2),
-    color: '#1a1a1a',
-    lineHeight: 1.4,
-    '& .required-star': {
-        color: '#d32f2f',
-        marginLeft: '4px',
-        fontWeight: 'bold',
-        fontSize: '1.2rem',
-        display: 'inline-block',
-        verticalAlign: 'text-top'
-    }
-}));
- 
-const StyledButton = styled(Button)(({ theme }) => ({
-    padding: theme.spacing(1.2, 5),
-    fontSize: '1rem',
-    borderRadius: '8px',
-    textTransform: 'none',
-    fontWeight: 600,
-    boxShadow: '0 4px 12px 0 rgba(103, 58, 183, 0.25)',
-    background: 'linear-gradient(135deg, #673ab7 0%, #3f51b5 100%)',
-    color: 'white',
-    transition: 'all 0.2s ease',
-    '&:hover': {
-        transform: 'translateY(-1px)',
-        boxShadow: '0 6px 16px 0 rgba(103, 58, 183, 0.35)',
-    },
-    [theme.breakpoints.down('sm')]: {
-        width: '100%',
-        padding: theme.spacing(1.2, 2),
-        fontSize: '0.95rem',
-    }
-}));
-const FooterBar = styled(Box)(({ theme }) => ({
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: theme.spacing(1.5, 2),
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    backdropFilter: 'blur(12px)',
-    borderTop: `1px solid ${theme.palette.divider}`,
-    boxShadow: '0 -4px 20px rgba(0,0,0,0.08)',
-    zIndex: 4000,
-    display: 'flex',
-    justifyContent: 'flex-end',
-    [theme.breakpoints.up('sm')]: {
-        padding: theme.spacing(1, 4),
-    }
-}));
- 
-const BackArrowIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M15 18l-6-6 6-6"/>
-  </svg>
-);
+
+function getNewModeInputTextElement(q, value, setVal, error, setErrors, onPasteDetected, onKeystroke, placeholderTranslations = {}) {
+    return (
+        <div className="w-full bg-white rounded-2xl border border-slate-200 shadow-xs p-4">
+            <input 
+                type="text"
+                value={value || ""}
+                onChange={(e) => setVal(e.target.value)}
+                className="w-full h-11 sm:h-[50px] px-3.5 sm:px-4 text-[14px] sm:text-[15.5px] rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+                placeholder={(typeof placeholderTranslations === "string" && placeholderTranslations) ? placeholderTranslations : "Type your answer here..."}
+                onCopy={(e) => { if (q?.IsZipValidate === 1 || q?.DemoId == 3) e.preventDefault(); }}
+                onPaste={(e) => { 
+                    if (onPasteDetected) onPasteDetected();
+                    if (q?.IsZipValidate === 1 || q?.DemoId == 3) e.preventDefault(); 
+                }}
+                onKeyDown={onKeystroke}
+                autoComplete="off"
+            />
+        </div>
+    );
+}
+
+function getNewModeRadioOptions(q, value, setVal) {
+    return (
+        <div className="w-full flex flex-col">
+            {q.QuestionAnswerCodes.map((option, idx) => {
+                const isSelected = String(value) === String(option.OId);
+                return (
+                    <OptionCard 
+                            key={`${option.OId}-${idx}`}
+                            option={option}
+                            isSelected={isSelected}
+                            onClick={() => setVal(option.OId)}
+                            idx={idx}
+                            isMulti={false}
+                        />
+                );
+            })}
+        </div>
+    );
+}
+
+const ControlledDropdown = ({ q, value, setVal, searchQuery }) => {
+    const debouncedSearchQuery = useDebounce(searchQuery, 300);
+    
+    const displayedOptions = useMemo(() => {
+        if (!q || !q.QuestionAnswerCodes) return [];
+        if (!debouncedSearchQuery.trim()) return q.QuestionAnswerCodes;
+        return q.QuestionAnswerCodes.filter(opt => 
+            opt.optionText.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+        );
+    }, [q, debouncedSearchQuery]);
+
+    
+
+    return (
+        <div className="w-full flex flex-col">
+            
+            
+            {displayedOptions.length === 0 ? (
+                <DataNotFound searchQuery={searchQuery} />
+            ) : (
+                <div key={searchQuery} className="w-full flex flex-col">
+                    {displayedOptions.map((option, idx) => {
+                        const isSelected = String(value) === String(option.OId);
+                        return (
+                            <OptionCard 
+                            key={`${option.OId}-${idx}`}
+                            option={option}
+                            isSelected={isSelected}
+                            onClick={() => setVal(option.OId)}
+                            idx={idx}
+                            isMulti={false}
+                        />
+                        );
+                    })}
+                </div>
+            )}
+        </div>
+    );
+};
+
+const GetMultiSelectDropDown = ({ q, value, setVal, searchQuery }) => {
+    const debouncedSearchQuery = useDebounce(searchQuery, 300);
+    
+    const displayedOptions = useMemo(() => {
+        if (!q || !q.QuestionAnswerCodes) return [];
+        if (!debouncedSearchQuery.trim()) return q.QuestionAnswerCodes;
+        return q.QuestionAnswerCodes.filter(opt => 
+            opt.optionText.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+        );
+    }, [q, debouncedSearchQuery]);
+
+    
+
+    const toggleSelect = (id) => {
+        let selectedValues = value ? String(value).split(",") : [];
+        if (selectedValues.includes(String(id))) {
+            selectedValues = selectedValues.filter(v => v !== String(id));
+        } else {
+            selectedValues.push(String(id));
+        }
+        setVal(selectedValues.join(","));
+    };
+
+    return (
+        <div className="w-full flex flex-col">
+            
+            
+            {displayedOptions.length === 0 ? (
+                <DataNotFound searchQuery={searchQuery} />
+            ) : (
+                <div key={searchQuery} className="w-full flex flex-col">
+                    {displayedOptions.map((option, idx) => {
+                        const isSelected = value ? String(value).split(",").includes(String(option.OId)) : false;
+                        return (
+                            <OptionCard 
+                            key={`${option.OId}-${idx}`}
+                            option={option}
+                            isSelected={isSelected}
+                            onClick={() => toggleSelect(option.OId)}
+                            idx={idx}
+                            isMulti={true}
+                        />
+                        );
+                    })}
+                </div>
+            )}
+        </div>
+    );
+};
 
 const DemographicsIsSinglePageScreening = () => {
     const dispatch = useDispatch();
     const allDemos = useSelector(state => state.participant.demographicsData);
     const [userAnswer, setUserAnswer] = useState({});
+    const [searchQuery, setSearchQuery] = useState('');
+    // unused state
+    const [canScrollMore, setCanScrollMore] = useState(false);
+    const optionsContainerRef = useRef(null);
+    
+
     const [errors, setErrors] = useState({});
     const [isCopied, setIsCopied] = useState({});
     const [submissionAlert, setSubmissionAlert] = useState(false);
@@ -586,10 +178,80 @@ const DemographicsIsSinglePageScreening = () => {
     const [isGameActive, setIsGameActive] = useState(false);
     const [smartFilterResult, setSmartFilterResult] = useState(-1);
     const [isIPRankerEnabled, setIsIPRankerEnabled] = useState(false);
-    const [showDemoUID, setShowDemoUID] = useState(true);
     const [surveyDone, setSurveyDone] = useState(false);
     const [surveyResults, setSurveyResults] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+const q = allDemos?.allDemos?.[currentQuestionIndex];
+
+    useEffect(() => {
+        setSearchQuery("");
+    }, [currentQuestionIndex]);
+
+const displayedOptions = useMemo(() => {
+        if (!q || !q.QuestionAnswerCodes) return [];
+        if (!searchQuery.trim()) return q.QuestionAnswerCodes;
+        return q.QuestionAnswerCodes.filter(opt => 
+            opt.optionText.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [q, searchQuery]);
+
+    
+
+        const isSearchEnabledForQuestion = useMemo(() => {
+        if (!q || !q.QuestionAnswerCodes) return false;
+        const options = q.QuestionAnswerCodes;
+        if (options.length < 12) return false;
+        const isMostlyShort = options.every(opt => String(opt.optionText).length <= 5);
+        if (isMostlyShort && options.length < 40) return false;
+        return true;
+    }, [q]);
+
+    const checkScrollAndOverflow = () => {
+        if (!optionsContainerRef.current) return;
+        const el = optionsContainerRef.current;
+        const contentChild = el.firstElementChild;
+        if (!contentChild) return;
+        
+        // Compare actual content height against container to avoid flex margin bugs
+        const hasDomOverflow = contentChild.scrollHeight > el.clientHeight;
+        
+        const remaining = el.scrollHeight - el.scrollTop - el.clientHeight;
+        setCanScrollMore(hasDomOverflow && remaining > 15);
+    };
+
+    const handleContainerScroll = () => checkScrollAndOverflow();
+
+    const handleScrollMoreClick = () => {
+        if (optionsContainerRef.current) {
+            optionsContainerRef.current.scrollBy({ top: 240, behavior: 'smooth' });
+        }
+    };
+
+    useEffect(() => {
+        setSearchQuery('');
+        setCanScrollMore(false);
+        if (optionsContainerRef.current) optionsContainerRef.current.scrollTop = 0;
+        checkScrollAndOverflow();
+        const timer = setTimeout(checkScrollAndOverflow, 60);
+        return () => clearTimeout(timer);
+    }, [currentQuestionIndex]);
+
+    // Recalculate scroll when search changes (after child debounce of 300ms)
+    useEffect(() => {
+        const timer = setTimeout(checkScrollAndOverflow, 350);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    // Handle window resize to recalculate scroll overflow (Hidden Bug Fix)
+    useEffect(() => {
+        const handleResize = () => {
+            checkScrollAndOverflow();
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const questionRefs = useRef({});
     const { getBotSignals, onKeystroke, onInputChange, honeypotProps } = useBotDetector();
     const rawCountryId = useSelector(
@@ -644,7 +306,7 @@ const DemographicsIsSinglePageScreening = () => {
  
     const handleNext = () => {
         let newErrors = {};
-        const q = allDemos.allDemos[currentQuestionIndex];
+        
         const val = userAnswer[q.QId];
         let hasError = false;
 
@@ -849,7 +511,6 @@ const DemographicsIsSinglePageScreening = () => {
 
             dispatch(checkUserQuotaAction(userResponse));
  
-            setShowDemoUID(false);
             setIsSubmitting(false);
  
         } catch (error) {
@@ -857,10 +518,6 @@ const DemographicsIsSinglePageScreening = () => {
             setIsSubmitting(false);
         }
     };
- 
-    const Alert = React.forwardRef(function Alert(props, ref) {
-        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-    });
  
     if (isGameActive) {
         return (
@@ -874,476 +531,155 @@ const DemographicsIsSinglePageScreening = () => {
         return <SurveyQuestions onComplete={handleSurveyComplete} />;
     }
   
-    const q = allDemos.allDemos[currentQuestionIndex];
+    
     if (!q) return null;
+
+    
+    
 
     const val = userAnswer[q.QId] || "";
     const error = errors[q.QId];
-
     let optionsUI = "";
     if (q.queryType == 1 || q.queryType == "dropdown") {
-        optionsUI = <ControlledDropdown q={q} value={val} setVal={(v) => setAnswerForQ(q.QId, v)} translations={translations} />;
+        optionsUI = <ControlledDropdown q={q} value={val} setVal={(v) => setAnswerForQ(q.QId, v)}  searchQuery={searchQuery} />;
     } else if (q.queryType == 2 || q.queryType == "radio") {
         optionsUI = getNewModeRadioOptions(q, val, (v) => setAnswerForQ(q.QId, v));
     } else if (q.queryType == 4 || q.queryType == "multiselect") {
-        optionsUI = <GetMultiSelectDropDown q={q} value={val} setVal={(v) => setAnswerForQ(q.QId, v)} translations={translations} />;
+        optionsUI = <GetMultiSelectDropDown q={q} value={val} setVal={(v) => setAnswerForQ(q.QId, v)}  searchQuery={searchQuery} />;
     } else {
-        const showTextFieldError = (q.queryType == "range" || q.queryType == 5) && error && error != (translations?.errors?.required || "This question is required");
+        const showTextFieldError = (q.queryType == "range" || q.queryType == 5) && error && error != "This question is required";
         optionsUI = getNewModeInputTextElement(q, val, (v) => { setUserAnswer(prev => ({ ...prev, [q.QId]: v })); onInputChange(q.QId, v); }, showTextFieldError ? error : null, setErrors, () => setIsCopied(prev => ({ ...prev, [q.QId]: 1 })), onKeystroke, translations?.errors, translations?.placeholder?.enterAnswer);
     }
 
-    return (
-        <React.Fragment>
-            <CssBaseline />
-            <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', pt: { xs: 2, md: 4 }, pb: { xs: 8, md: 10 } }} >
-                <Box sx={{ width: '100%', maxWidth: '700px' }} >
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                        <IconButton onClick={handleBack} disabled={currentQuestionIndex === 0} sx={{ mr: 1, visibility: currentQuestionIndex === 0 ? 'hidden' : 'visible' }}>
-                            <BackArrowIcon />
-                        </IconButton>
-                        <Box sx={{ flexGrow: 1, mx: 2 }}>
-                            <LinearProgress 
-                                variant="determinate" 
-                                value={(currentQuestionIndex / allDemos.allDemos.length) * 100} 
-                                sx={{ height: 8, borderRadius: 4, backgroundColor: '#e0e0e0', '& .MuiLinearProgress-bar': { backgroundColor: '#4caf50' } }} 
-                            />
-                        </Box>
-                        {/* Dummy invisible box to balance the back icon for centering */}
-                        <Box sx={{ width: 40, height: 40 }} />
-                    </Box>
+    const isSingle = q.queryType == 1 || q.queryType == 2 || q.queryType == "dropdown" || q.queryType == "radio";
+    const isMulti = q.queryType == 4 || q.queryType == "multiselect";
+    const isText = !isSingle && !isMulti;
 
-                    <StyledCard>
-                        <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
-                            <QuestionContainer
-                                key={q.QId}
-                                ref={el => questionRefs.current[q.QId] = el}
-                                id={`question-${q.QId}`}
-                            >
-                                <QuestionText>
-                                    {q.question} <span className="required-star">*</span>
-                                </QuestionText>
-                                <Box sx={{ mt: 1 }}>
-                                    {optionsUI}
-                                    {error && (
-                                        <Typography color="error" fontSize={13} mt={0.5} sx={{ fontWeight: 500 }}>
-                                            {error}
-                                        </Typography>
-                                    )}
-                                </Box>
-                            </QuestionContainer>
-                            {/* Honeypot – invisible to real users; bots fill it */}
-                            <input {...honeypotProps} />
-                        </CardContent>
-                    </StyledCard>
-                </Box>
- 
-                <Snackbar open={submissionAlert} autoHideDuration={3000} onClose={() => setSubmissionAlert(false)} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-                    <Alert severity="error" onClose={() => setSubmissionAlert(false)}>
-                        {translations?.errors?.pleaseAnswerAll || "Please answer all questions correctly to proceed."}
-                    </Alert>
-                </Snackbar>
- 
-                <FooterBar>
-                    <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'flex-end', p: 0 }}>
-                        <Box sx={{ width: '100%', maxWidth: '700px', display: 'flex', justifyContent: 'flex-end' }}>
-                            <StyledButton
-                                onClick={handleNext}
-                                disabled={isSubmitting}
-                                sx={{ minWidth: '200px', background: '#4caf50', '&:hover': { background: '#45a049' }, boxShadow: 'none' }}
-                            >
-                                {
-                                    isSubmitting ? (
-                                        <CircularProgress size={24} sx={{ color: 'white' }} />
-                                    ) : (
-                                        currentQuestionIndex === allDemos.allDemos.length - 1 ? (translations?.buttons?.submit ?? "Submit") : "Next"
-                                    )
-                                }
-                            </StyledButton>
-                        </Box>
-                    </Container>
-                </FooterBar>
- 
-            </Container>
-        </React.Fragment>
-    );
-};
- 
-// --- New Mode Helpers ---
-const ControlledDropdown = ({ q, value, setVal, translations }) => {
-    const [open, setOpen] = useState(false);
-    const [search, setSearch] = useState("");
-    const containerRef = useRef(null);
-    const dropdownRef = useRef(null);
-    const [openUpward, setOpenUpward] = useState(false);
-
-    const checkPosition = () => {
-        if (!containerRef.current || !dropdownRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        const dropdownHeight = 350;
-        const footerHeight = 85; 
-        const spaceBelow = window.innerHeight - rect.bottom - footerHeight;
-        const spaceAbove = rect.top;
-        setOpenUpward(spaceBelow < dropdownHeight && spaceAbove > spaceBelow);
-    };
-
-    useEffect(() => {
-        if (open) setTimeout(checkPosition, 0);
-    }, [open]);
-
-    useEffect(() => {
-        const handle = () => { if (open) checkPosition(); };
-        window.addEventListener("resize", handle);
-        return () => {
-            window.removeEventListener("resize", handle);
-        };
-    }, [open]);
-
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const filteredOptions = q.QuestionAnswerCodes.filter(opt =>
-        opt.optionText.toLowerCase().includes(search.toLowerCase())
-    );
-
-    const selectedOption = q.QuestionAnswerCodes.find(i => String(i.OId) === String(value));
+    const progressPercent = Math.round(((currentQuestionIndex + 1) / allDemos.allDemos.length) * 100);
 
     return (
-        <div className="custom-multiselect relative w-full" ref={containerRef} style={{ marginBottom: '8px' }}>
-            <div className={`ms-input ${open ? 'focused' : ''}`} onClick={() => setOpen(prev => !prev)}>
-                {!value ? (
-                    <span className="ms-placeholder">{translations.dropdown.selectOption}</span>
-                ) : (
-                    <span style={{ fontSize: '0.95rem', color: '#1a1a1a', padding: '0 4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {selectedOption ? selectedOption.optionText : value}
-                    </span>
-                )}
-                <div className={`ms-arrow ${open ? 'open' : ''}`}>
-                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M1 1.5L6 6.5L11 1.5" />
-                    </svg>
-                </div>
+        <div className={`fixed inset-0 w-full h-[100dvh] flex flex-col justify-between overflow-hidden text-slate-900 ${themeClasses.mainBackground} selection:bg-indigo-100 selection:text-indigo-900 z-[9999]`}>
+            {/* Dynamic ambient survey backdrop */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0">
+                <div className={`absolute -top-32 -left-32 w-96 h-96 rounded-full ${themeClasses.ambientOrb1}`} />
+                <div className={`absolute top-1/4 -right-32 w-96 h-96 rounded-full ${themeClasses.ambientOrb2}`} />
+                <div className={`absolute -bottom-32 left-1/3 w-96 h-96 rounded-full ${themeClasses.ambientOrb3}`} />
             </div>
 
-            {open && (
-                <React.Fragment>
-                    <div className="ms-overlay" onClick={() => setOpen(false)} />
-                    <div ref={dropdownRef} className={`ms-dropdown ${openUpward ? "dropdown-up" : "dropdown-down"}`}>
-                        <input
-                            type="text"
-                            className="ms-search"
-                            placeholder={translations.dropdown.searchPlaceholder}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            onClick={(e) => e.stopPropagation()}
-                        />
-                        <div className="ms-options">
-                            {filteredOptions.length > 0 ? (
-                                filteredOptions.map(opt => (
-                                    <div
-                                        key={opt.OId}
-                                        className={`ms-option ${String(opt.OId) === String(value) ? 'selected' : ''}`}
-                                        onClick={() => {
-                                            setVal(opt.OId);
-                                            setOpen(false);
-                                            setSearch("");
-                                        }}
-                                    >
-                                        {opt.optionText}
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="ms-no-data">No results found</div>
-                            )}
-                        </div>
-                    </div>
-                </React.Fragment>
-            )}
-        </div>
-    );
-};
- 
-function getNewModeMultiSelect(q, value, setVal) {
-    return (
-        <FormGroup sx={{ width: '100%' }}>
-            {q.QuestionAnswerCodes.map(i => {
-                let arr = value ? String(value).split(",") : [];
-                let isCheck = arr.includes(String(i.OId));
- 
-                return (
-                    <FormControlLabel
-                        key={i.OId}
-                        control={
-                            <Checkbox
-                                checked={isCheck}
-                                onClick={() => {
-                                    let arr = value ? String(value).split(",") : [];
-                                    if (arr.includes(String(i.OId))) {
-                                        arr = arr.filter(x => x !== String(i.OId));
-                                    } else {
-                                        arr.push(String(i.OId));
-                                    }
-                                    setVal(arr.join(","));
-                                }}
-                                color="primary"
-                            />
-                        }
-                        label={i.optionText}
-                        slotProps={{ typography: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
-                        sx={{
-                            width: '100%',
-                            ml: 0,
-                            mb: 1,
-                            border: '1px solid #e0e0e0',
-                            borderRadius: '8px',
-                            padding: '6px 12px',
-                            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                            backgroundColor: isCheck ? '#f5f5ff' : '#fff',
-                            borderColor: isCheck ? '#3f51b5' : '#e0e0e0',
-                            borderWidth: isCheck ? '2px' : '1px',
-                            '&:hover': {
-                                borderColor: '#3f51b5',
-                                backgroundColor: isCheck ? '#f0f0ff' : '#f9f9f9'
-                            },
-                            '& .MuiFormControlLabel-label': {
-                                width: '100%',
-                                userSelect: 'none'
-                            }
-                        }}
-                    />
-                );
-            })}
-        </FormGroup>
-    );
-}
-
-const GetMultiSelectDropDown = ({ q, value, setVal, translations }) => {
-    const [open, setOpen] = useState(false);
-    const [search, setSearch] = useState("");
-    const containerRef = useRef(null);
-    const dropdownRef = useRef(null);
-    const [openUpward, setOpenUpward] = useState(false);
-
-    const selectedValues = value ? String(value).split(",") : [];
-
-    const checkPosition = () => {
-        if (!containerRef.current || !dropdownRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        const dropdownHeight = 350;
-        const footerHeight = 85; 
-        const spaceBelow = window.innerHeight - rect.bottom - footerHeight;
-        const spaceAbove = rect.top;
-        setOpenUpward(spaceBelow < dropdownHeight && spaceAbove > spaceBelow);
-    };
-
-    useEffect(() => {
-        if (open) setTimeout(checkPosition, 0);
-    }, [open]);
-
-    useEffect(() => {
-        const handle = () => { if (open) checkPosition(); };
-        window.addEventListener("resize", handle);
-        return () => {
-            window.removeEventListener("resize", handle);
-        };
-    }, [open]);
-
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const toggleSelect = (id) => {
-        let updated = [...selectedValues];
-        if (updated.includes(String(id))) {
-            updated = updated.filter(v => v !== String(id));
-        } else {
-            updated.push(String(id));
-        }
-        setVal(updated.join(","));
-    };
-
-    const filteredOptions = q.QuestionAnswerCodes.filter(opt =>
-        opt.optionText.toLowerCase().includes(search.toLowerCase())
-    );
-
-    return (
-        <div className="custom-multiselect relative w-full" ref={containerRef}>
-            <div className={`ms-input ${open ? 'focused' : ''}`} onClick={() => setOpen(prev => !prev)}>
-                {selectedValues.length === 0 && (
-                    <span className="ms-placeholder">{translations.dropdown.selectOption}</span>
-                )}
-                <div className="ms-chips">
-                    {selectedValues.map(val => {
-                        const option = q.QuestionAnswerCodes.find(i => String(i.OId) === String(val));
-                        if (!option) return null;
-                        return (
-                            <div key={val} className="ms-chip">
-                                {option.optionText}
-                                <span className="ms-remove" onClick={(e) => { e.stopPropagation(); toggleSelect(val); }}>×</span>
-                            </div>
-                        );
-                    })}
-                </div>
-                <div className={`ms-arrow ${open ? 'open' : ''}`}>
-                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M1 1.5L6 6.5L11 1.5" />
-                    </svg>
-                </div>
-            </div>
-
-            {open && (
-                <React.Fragment>
-                    <div className="ms-overlay" onClick={() => setOpen(false)} />
-                    <div ref={dropdownRef} className={`ms-dropdown ${openUpward ? "dropdown-up" : "dropdown-down"}`}>
-                        <input
-                            type="text"
-                            className="ms-search"
-                            placeholder={translations.dropdown.searchPlaceholder}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            onClick={(e) => e.stopPropagation()}
-                        />
-                        <div className="ms-options">
-                            {filteredOptions.length > 0 ? (
-                                filteredOptions.map(opt => {
-                                    const isSelected = selectedValues.includes(String(opt.OId));
-                                    return (
-                                        <label key={opt.OId} className={`ms-option ${isSelected ? 'selected' : ''}`}>
-                                            <input
-                                                type="checkbox"
-                                                checked={isSelected}
-                                                onChange={() => toggleSelect(opt.OId)}
-                                            />
-                                            {opt.optionText}
-                                        </label>
-                                    );
-                                })
-                            ) : (
-                                <div className="ms-no-data">No results found</div>
-                            )}
-                        </div>
-                    </div>
-                </React.Fragment>
-            )}
-        </div>
-    );
-};
-function getNewModeRadioOptions(q, value, setVal) {
-    return (
-        <FormControl fullWidth component="fieldset">
-            <RadioGroup
-                name={`question-${q.QId}`}
-                value={value}
-                onChange={e => setVal(e.target.value)}
-            >
-                {q.QuestionAnswerCodes.map(i => {
-                    const isSelected = String(i.OId) === String(value);
-                    return (
-                        <FormControlLabel
-                            key={i.OId}
-                            value={String(i.OId)}
-                            control={<Radio color="primary" size="small" />}
-                            label={i.optionText}
-                            slotProps={{ typography: { fontSize: { xs: '0.9rem', sm: '1rem' } } }}
-                            sx={{
-                                width: '100%',
-                                ml: 0,
-                                mb: 1.2,
-                                border: '1px solid',
-                                borderRadius: '8px',
-                                padding: '6px 14px',
-                                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                                backgroundColor: isSelected ? '#f8f9ff' : '#fff',
-                                borderColor: isSelected ? '#3f51b5' : '#e0e0e0',
-                                borderWidth: isSelected ? '1.5px' : '1px',
-                                boxShadow: isSelected ? '0 2px 8px rgba(63, 81, 181, 0.08)' : 'none',
-                                '&:hover': {
-                                    borderColor: '#3f51b5',
-                                    backgroundColor: isSelected ? '#f1f3ff' : '#f9f9f9',
-                                },
-                                '& .MuiFormControlLabel-label': {
-                                    width: '100%',
-                                    userSelect: 'none'
-                                }
-                            }}
-                        />
-                    );
-                })}
-            </RadioGroup>
-        </FormControl>
-    );
-}
- 
-function getNewModeInputTextElement(q, value, setVal, error, setErrors, onPasteDetected, onKeystroke, translationsErrors = {}, placeholderTranslations = {}) {
-    return (
-        <FormControl fullWidth>
-            <TextField
-                variant="outlined"
-                value={value}
-                error={!!error}
-                placeholder={placeholderTranslations || "Type your answer here..."}
-                onKeyDown={(e) => { if (onKeystroke) onKeystroke(e); }}
-                onCopy={(e) => {
-                    if (q?.IsZipValidate === 1 || q?.DemoId == 3) {
-                        e.preventDefault();
-                    }
-                }}
-                onPaste={(e) => {
-                    if (onPasteDetected) onPasteDetected();
-                    if (q?.IsZipValidate === 1 || q?.DemoId == 3) {
-                        e.preventDefault();
-                    }
-                }}
-                onChange={e => {
-                    let val = e.target.value;
-                    if (q.queryType === "text" || q.queryType === 3) {
-                        val = val.toUpperCase();
-                    }
-                    if (q.queryType === "range" || q.queryType == 5) {
-                        val = val.replace(/[^0-9]/g, '');
-                        setErrors(prev => ({
-                            ...prev,
-                            [q.QId]: ""
-                        }));
-                    }
-                    // ✅ ZIP VALIDATION
-                    if (q?.IsZipValidate === 1 || q?.DemoId == 3) {
-                        setErrors(prev => ({
-                            ...prev,
-                            [q.QId]: ""
-                        }));
-                    }
-                    setVal(val);
-                }}
-                type="text"
-                sx={{
-                    bgcolor: '#fff',
-                    '& .MuiOutlinedInput-root': {
-                        borderRadius: '8px',
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#3f51b5',
-                        },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#3f51b5',
-                            borderWidth: '2px',
-                        },
-                    },
-                    '& .MuiOutlinedInput-input': {
-                        padding: '12px 14px',
-                        fontSize: { xs: '0.9rem', sm: '0.95rem' }
-                    }
-                }}
+            <ProgressBar 
+                currentQuestionIndex={currentQuestionIndex}
+                totalQuestions={allDemos.allDemos.length}
+                progressPercent={progressPercent}
+                handleBack={handleBack}
+                handleNext={handleNext}
             />
-        </FormControl>
+
+            <div className="flex-shrink-0 w-full px-4 sm:px-6 pt-4 pb-2 z-20">
+                <div className="w-full max-w-xl mx-auto animate-question-next">
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full shadow-2xs border ${themeClasses.typography.labelSmall} ${themeClasses.bg.pill} ${themeClasses.text.pill}`}>
+                            <Sparkles className="w-3 h-3 text-indigo-600" />
+                            Question {currentQuestionIndex + 1} of {allDemos.allDemos.length}
+                        </span>
+                    </div>
+
+                    <h2 className={`mt-1 ${themeClasses.typography.headlineLarge} ${themeClasses.text.primary}`}>
+                        {q.question}
+                    </h2>
+
+                    <div className="mt-1.5 flex items-center justify-between gap-2">
+                        <p className={`${themeClasses.typography.bodyMedium} ${themeClasses.text.secondary}`}>
+                            {isMulti ? "Select all that apply" : isText ? "Type your answer below" : "Select one option to continue"}
+                        </p>
+                    </div>
+                    {error && (
+                        <div className={`mt-3 flex items-start gap-2.5 px-4 py-3 rounded-xl shadow-sm animate-in fade-in slide-in-from-top-1 border ${themeClasses.bg.error} ${themeClasses.text.error}`}>
+                            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" strokeWidth={2.5} />
+                            <p className="text-sm font-semibold tracking-tight">{error}</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div key={q.QId} className="relative flex-1 min-h-0 w-full flex flex-col items-center overflow-hidden z-20">
+                <style>{`
+                  @keyframes slideInFromRight {
+                    from { opacity: 0; transform: translate3d(24px, 0, 0); }
+                    to { opacity: 1; transform: translate3d(0, 0, 0); }
+                  }
+                  @keyframes optionFadeInUp {
+                    from { opacity: 0; transform: translate3d(0, 12px, 0); }
+                    to { opacity: 1; transform: translate3d(0, 0, 0); }
+                  }
+                  @keyframes checkmarkPop {
+                    0% { transform: scale(0.5); opacity: 0; }
+                    60% { transform: scale(1.2); opacity: 1; }
+                    100% { transform: scale(1); opacity: 1; }
+                  }
+                  .animate-question-next { animation: slideInFromRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+                  .animate-option-item { animation: optionFadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+                  .animate-check-pop { animation: checkmarkPop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+                  .attapoll-scroll::-webkit-scrollbar { width: 6px; }
+                  .attapoll-scroll::-webkit-scrollbar-track { background: transparent; }
+                  .attapoll-scroll::-webkit-scrollbar-thumb { background-color: rgba(148, 163, 184, 0.45); border-radius: 9999px; }
+                  .attapoll-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(100, 116, 139, 0.65); }
+                `}</style>
+
+                <div
+                    ref={optionsContainerRef}
+                    onScroll={handleContainerScroll}
+                    className="attapoll-scroll w-full h-full overflow-y-auto overscroll-contain px-4 sm:px-6 py-2 flex flex-col items-center relative"
+                >
+                    <div className={`w-full max-w-xl flex flex-col pb-6 pt-1 transition-all duration-200 ${!isSearchEnabledForQuestion && !searchQuery.trim() ? 'my-auto' : ''}`}>
+                        
+                        {optionsUI}
+                    </div>
+
+                    
+
+                    {canScrollMore && displayedOptions.length > 0 && (
+                        <div className="sticky bottom-2 z-20 flex justify-center pointer-events-none mt-auto pb-1 animate-bounce">
+                            <button
+                                type="button"
+                                onClick={handleScrollMoreClick}
+                                className="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold shadow-md bg-white border border-slate-200 text-indigo-600"
+                            >
+                                <span>Scroll for more</span>
+                                <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className={`flex-shrink-0 sticky bottom-0 z-30 w-full pt-2.5 pb-4 px-4 sm:px-6 ${themeClasses.surfaceBlur}`}>
+                <div className="w-full max-w-xl mx-auto space-y-2.5">
+                    {isSearchEnabledForQuestion && (
+<SearchBox searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                    )}
+                    <Button
+                            onClick={handleNext}
+                            isLoading={isSubmitting}
+                            icon={ArrowRight}
+                        >
+                            {currentQuestionIndex < allDemos.allDemos.length - 1 ? "Next" : "Complete Screening"}
+                        </Button>
+                    {/* Honeypot */}
+                    <input {...honeypotProps} style={{ display: 'none' }} />
+                </div>
+            </div>
+            
+            <Snackbar 
+                open={submissionAlert} 
+                autoHideDuration={3000} 
+                onClose={() => setSubmissionAlert(false)} 
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <MuiAlert severity="error" onClose={() => setSubmissionAlert(false)}>
+                    {translations?.errors?.pleaseAnswerAll || "Please answer all questions correctly to proceed."}
+                </MuiAlert>
+            </Snackbar>
+        </div>
     );
-}
- 
+};
 export default DemographicsIsSinglePageScreening;

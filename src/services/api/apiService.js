@@ -51,9 +51,7 @@ export const createBrowserData = (body)=>{
               return result;
         });
         
-    } catch (error) {
-        
-    }
+    } catch(error) { console.error(error); }
 }
 
 export const welcomeMessage = (queryParams = '') => {

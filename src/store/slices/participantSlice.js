@@ -66,7 +66,7 @@ export const createParticipantAction = (allQueryParams, landingURL) => {
             dispatch(endSpinner());
             if (result.success) {
                 // Set Cookie ID Here
-                if (result.result.hasOwnProperty("cookieId") && result.result.cookieId > 0) {
+                if (Object.prototype.hasOwnProperty.call(result.result, "cookieId") && result.result.cookieId > 0) {
                     cookies.set('userId', result.result.cookieId, { path: '/' });
                 }
 

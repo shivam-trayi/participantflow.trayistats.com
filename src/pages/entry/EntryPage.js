@@ -89,7 +89,7 @@ const Home = () => {
     function toQueryParams(obj = {}) {
         const params = new URLSearchParams();
         for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
                 params.append(key, obj[key]);
             }
         }
@@ -106,7 +106,7 @@ const Home = () => {
     useEffect(() => {
         if (allRequestData.badUrlHitting) {
             dispatch(setMessage({ success: false, message: "You are hitting a bad url." }))
-        };
+        }
 
 
     }, [allRequestData.badUrlHitting, dispatch]);
