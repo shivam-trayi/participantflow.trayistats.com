@@ -13,7 +13,7 @@ import { startSpinner } from "../../store/slices/loaderSlice";
 import DragAndDropGame from './ui/DragAndDropGame';
 import SurveyQuestions from './ui/SurveyQuestions';
 import { COUNTRY_CODE, ZIP_REGEX, ZIP_EXAMPLES } from '../../utils/countrylangMapping';
-import '../screening/ui/multiselectDropdown.css';  
+  
 import { getTranslationsByCountryId } from '../../locales';
 import useBotDetector from '../../hooks/useBotDetector';
 import Box from '@mui/material/Box';

@@ -27,10 +27,10 @@ const themeColors = {
         textColor: '#4f46e5',
     },
     alert: {
-        gradientFrom: '#6b42d3',
-        gradientTo: '#455cd9',
-        iconBg: '#eef2ff',
-        iconColor: '#6366f1',
+        gradientFrom: '#ef4444',
+        gradientTo: '#dc2626',
+        iconBg: '#fef2f2',
+        iconColor: '#ef4444',
     }
 };
 

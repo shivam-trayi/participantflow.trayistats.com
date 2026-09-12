@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setMessage } from '../../store/slices/alertSlice';
 import { requestData } from '../../utils/requestData';
-import { createParticipantAction, createBrowserDataAction, fetchWelcomeMessageAction } from '../../store/slices/participantSlice';
+import { createParticipantAction, fetchWelcomeMessageAction } from '../../store/slices/participantSlice';
 import { startSpinner } from '../../store/slices/loaderSlice';
 import Demographics from '../../features/screening/demographics';
 import DemographicsIsSinglePageScreening from '../../features/screening/demographicsIsSinglePageScreening';
@@ -30,36 +30,39 @@ const getCpuArchitecture = async () => {
 };
 
 
-let browserVersion = rdd.browserVersion || 'Unknown';
-
-if (navigator.userAgentData?.getHighEntropyValues) {
-    try {
-        const data = await navigator.userAgentData.getHighEntropyValues([
-            "fullVersionList"
-        ]);
-
-        const matchedBrowser = data.fullVersionList?.find(item =>
-            item.brand.toLowerCase().includes((rdd.browserName || '').toLowerCase())
-        );
-
-        browserVersion = matchedBrowser?.version || browserVersion;
-    } catch (error) {
-        console.error("Failed to get full browser version:", error);
+const getBrowserVersion = async () => {
+    let browserVersion = rdd.browserVersion || 'Unknown';
+    if (navigator.userAgentData?.getHighEntropyValues) {
+        try {
+            const data = await navigator.userAgentData.getHighEntropyValues([
+                "fullVersionList"
+            ]);
+            const matchedBrowser = data.fullVersionList?.find(item =>
+                item.brand.toLowerCase().includes((rdd.browserName || '').toLowerCase())
+            );
+            browserVersion = matchedBrowser?.version || browserVersion;
+        } catch (error) {
+            console.error("Failed to get full browser version:", error);
+        }
     }
-}
+    return browserVersion;
+};
 
-const getBrowserLogData = (cpuArch) => ({
-    BrowserName: rdd.browserName || 'Unknown',
-    BrowserVersion: browserVersion || 'Unknown',
-    OSName: rdd.osName || 'Unknown',
-    DeviceType: rdd.isMobile ? 'Mobile' : (rdd.isTablet ? 'Tablet' : 'Desktop'),
-    CpuArchitecture: cpuArch,
-    ScreenWidth: window.screen.width || 0,
-    ScreenHeight: window.screen.height || 0,
-    BrowserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown',
-    // UserAgent: navigator.userAgent || 'Unknown',
-    Viewport: `${window.innerWidth}x${window.innerHeight}`
-});
+const getBrowserLogData = async (cpuArch) => {
+    const browserVersion = await getBrowserVersion();
+    return {
+        BrowserName: rdd.browserName || 'Unknown',
+        BrowserVersion: browserVersion || 'Unknown',
+        OSName: rdd.osName || 'Unknown',
+        DeviceType: rdd.isMobile ? 'Mobile' : (rdd.isTablet ? 'Tablet' : 'Desktop'),
+        CpuArchitecture: cpuArch,
+        ScreenWidth: window.screen.width || 0,
+        ScreenHeight: window.screen.height || 0,
+        BrowserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown',
+        // UserAgent: navigator.userAgent || 'Unknown',
+        Viewport: `${window.innerWidth}x${window.innerHeight}`
+    };
+};
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -145,7 +148,7 @@ const Home = () => {
                 dispatch(startSpinner());
                 let visitorId = await fetchFingerprint();
                 const cpuArch = await getCpuArchitecture();
-                const browserLogData = getBrowserLogData(cpuArch);
+                const browserLogData = await getBrowserLogData(cpuArch);
                 const browserParams = new URLSearchParams(browserLogData).toString();
                 let allQueryParams = allRequestData.urlQueryString;
                 allQueryParams = allQueryParams + "&platformVisitorId=" + visitorId + "&" + toQueryParams(activityData) + "&" + browserParams;
@@ -162,9 +165,9 @@ const Home = () => {
             // call action of API
             let allQueryParams = allRequestData.urlQueryString;
             let landingURL = allRequestData.landingURL;
-            let postData = {
-                allQueryParams, landingURL, browserData
-            }
+            // let postData = {
+                // allQueryParams, landingURL, browserData
+            // }
             // dispatch(createBrowserDataAction(postData));
         }
     }, [createParticipantApiCalled, allRequestData.badUrlHitting, allRequestData.urlQueryString, allRequestData.landingURL, browserData, dispatch])
@@ -200,7 +203,7 @@ const Home = () => {
                 visitorId = savedFingerprintId;
             }
             const cpuArch = await getCpuArchitecture();
-            const browserLogData = getBrowserLogData(cpuArch);
+            const browserLogData = await getBrowserLogData(cpuArch);
             const browserParams = new URLSearchParams(browserLogData).toString();
 
             let allQueryParams = allRequestData.urlQueryString;
