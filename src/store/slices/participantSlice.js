@@ -210,7 +210,7 @@ export const updateParticipantFromClientAction = (allQueryParams, landingURL, us
                 if (result.result.responseType === "MESSAGE") {
                     return { type: 'MESSAGE', success: false, message: result.result.message };
                 } else if (result.result.responseType === "REDIRECT") {
-                    return { type: 'REDIRECT', redirectURL: result.result.redirectURL };
+                    return { type: 'REDIRECT', redirectURL: result.result.redirectURL, isOpenNewTab: result.result.isOpenNewTab, isNewTabRedirect: result.result.isNewTabRedirect };
                 } else {
                     return { type: 'MESSAGE', success: false, message: "Ooops ! There is some issue with link." };
                 }

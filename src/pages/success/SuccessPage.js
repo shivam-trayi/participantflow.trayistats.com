@@ -414,7 +414,7 @@ const SuccessPage = () => {
                     </div>
 
                     <h1 className="animate-fade-1 text-4xl sm:text-5xl md:text-[3.6rem] font-extrabold tracking-tight mb-3 sm:mb-4 pb-1 select-none inline-flex items-center justify-center gap-2 sm:gap-3 flex-wrap drop-shadow-sm leading-tight">
-                        <span id="popperIcon" className="animate-popper text-3xl sm:text-4xl md:text-5xl select-none transition-transform hover:scale-125 cursor-pointer" title="Tap to celebrate!" aria-hidden="true">??</span>
+                        <span id="popperIcon" className="animate-popper text-3xl sm:text-4xl md:text-5xl select-none transition-transform hover:scale-125 cursor-pointer" title="Tap to celebrate!" aria-hidden="true">🎉</span>
                         <span className="shimmer-gradient-text">Congratulations!</span>
                     </h1>
 

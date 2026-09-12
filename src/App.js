@@ -1,6 +1,6 @@
-﻿import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { applyTheme } from './theme/applyTheme';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import MyLoader from './components/loader/loader';
 import AlertMessage from './components/alert/index';
@@ -13,11 +13,23 @@ const TerminatePage = React.lazy(() => import('./pages/terminate/TerminatePage')
 const QuotaFailPage = React.lazy(() => import('./pages/quotafail/QuotaFailPage'));
 const SecurityFailPage = React.lazy(() => import('./pages/securityfail/SecurityFailPage'));
 
+const GlobalLoader = () => {
+  const loading = useSelector(state => state.spinner.loading);
+  const location = useLocation();
+  const hiddenPaths = ['/success', '/terminate', '/quotafail', '/securityfail'];
+  const isHidden = hiddenPaths.some(p => location.pathname.startsWith(p));
+  
+  if (loading && !isHidden) {
+     return <MyLoader />;
+  }
+  return null;
+}
+
 function App() {
   useEffect(() => {
     applyTheme();
   });
-  const loading = useSelector(state => state.spinner.loading);
+  
   const alertMessage = useSelector(state => state.alert);
 
   return (
@@ -37,8 +49,8 @@ function App() {
                 <Route path="/securityfail" element={<SecurityFailPage />} />
               </Routes>
             </Suspense>
+            <GlobalLoader />
           </Router>
-          {loading && <MyLoader />}
         </div>
       )}
     </div>
