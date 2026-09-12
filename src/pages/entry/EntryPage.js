@@ -4,7 +4,6 @@ import { setMessage } from '../../store/slices/alertSlice';
 import { requestData } from '../../utils/requestData';
 import { createParticipantAction, fetchWelcomeMessageAction } from '../../store/slices/participantSlice';
 import { startSpinner } from '../../store/slices/loaderSlice';
-import Demographics from '../../features/screening/demographics';
 import DemographicsIsSinglePageScreening from '../../features/screening/demographicsIsSinglePageScreening';
 import * as rdd from 'react-device-detect';
 //import { getFingerprint } from 'fingerprintjs-pro';
@@ -175,16 +174,8 @@ const Home = () => {
     useEffect(() => {
         let demos = "";
         if (demographicsData) {
-            if (demographicsData?.IsSinglePageScreening === 1) {
+            
                 demos = <DemographicsIsSinglePageScreening />
-            } else {
-            // demographics component now uses useSelector, so we don't strictly need to pass allDemos prop if it fetches from store too.
-            // But Demographics.js currently expects nothing (I refactored it to use useSelector).
-            // Wait, in my previous refactor of Demographics, I removed props!
-            // Step 548 code: const Demographics = () => { ... const allDemos = useSelector... }
-            // So we don't need to pass demographicsData prop anymore.
-                demos = <Demographics />
-            }
             setContent(demos)
         }
     }, [demographicsData, setShowSurvey])
