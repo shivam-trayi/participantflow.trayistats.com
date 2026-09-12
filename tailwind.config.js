@@ -1,6 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-const colors = require('./src/theme/colors');
-const typography = require('./src/theme/typography');
 const { themeColors } = require('./src/theme/themeConfig');
 
 module.exports = {
@@ -11,8 +9,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-                        colors: {
-        ...colors,
+      colors: {
         brand: {
           from: 'rgb(var(--brand-from) / <alpha-value>)',
           to: 'rgb(var(--brand-to) / <alpha-value>)',
@@ -45,7 +42,9 @@ module.exports = {
           iconColor: 'rgb(var(--brandAlert-iconColor) / <alpha-value>)',
         }
       },
-      fontFamily: typography.fontFamily
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+      },
     },
   },
   plugins: [],

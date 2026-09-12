@@ -10,7 +10,7 @@ import { keyframes } from '@mui/system';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { getTranslationsByCountryId } from '../../../locales/index';
-import { generateMockData, MOCK_DATA } from '../../../mockData/dragAndDropMockData';
+import { MOCK_DATA } from '../../../mockData/dragAndDropMockData';
 
 // Full Expanded Mock Data Generator as requested by the user
 
