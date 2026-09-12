@@ -6,7 +6,8 @@ import {
     userFailedInScreening,
     createBrowserData,
     welcomeMessage,
-    logAttentionCheck
+    logAttentionCheck,
+    updateParticipantFromClient
 } from '../../services/api/apiService';
 import { startSpinner, endSpinner } from "./loaderSlice";
 import { setMessage } from "./alertSlice";
@@ -199,3 +200,25 @@ export const logAttentionCheckResponse = (body) => {
 
 export default participantSlice.reducer;
 
+
+
+export const updateParticipantFromClientAction = (allQueryParams, landingURL, userStatus) => {
+    return async (dispatch) => {
+        try {
+            const result = await updateParticipantFromClient(allQueryParams, landingURL, userStatus);
+            if (result.success) {
+                if (result.result.responseType === "MESSAGE") {
+                    return { type: 'MESSAGE', success: false, message: result.result.message };
+                } else if (result.result.responseType === "REDIRECT") {
+                    return { type: 'REDIRECT', redirectURL: result.result.redirectURL };
+                } else {
+                    return { type: 'MESSAGE', success: false, message: "Ooops ! There is some issue with link." };
+                }
+            } else {
+                return { type: 'MESSAGE', success: false, message: result.message };
+            }
+        } catch (error) {
+            return { type: 'MESSAGE', success: false, message: error.message || "An error occurred" };
+        }
+    };
+};

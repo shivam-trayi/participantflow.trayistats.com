@@ -3,7 +3,7 @@ export const requestData = (window) => {
   let queryString = window.location.search;
   let queryHref = window.location.href;
   let badUrlHitting = false;
-  if (queryString === "" || !(queryString.includes("vid") || queryString.includes("supplierCode"))) {
+  if (queryString === "" || !(queryString.includes("vid") || queryString.includes("supplierCode") || queryString.includes("UID") || queryString.includes("uid") || queryString.includes("tid"))) {
     badUrlHitting = true;
   }
 
