@@ -5,6 +5,7 @@ import { startSpinner, endSpinner } from "../../store/slices/loaderSlice";
 import { requestData } from "../../utils/requestData";
 import { updateParticipantFromClientAction } from "../../store/slices/participantSlice";
 import LandingPage from "../../components/common/LandingPage";
+import "../../styles/animations.css";
 
 const TerminatePage = () => {
     const dispatch = useDispatch();
@@ -76,74 +77,7 @@ const TerminatePage = () => {
 
     return (
         <div className="h-screen w-full text-slate-800 overflow-x-hidden flex flex-col justify-center items-center relative p-4 select-none mesh-canvas" style={{ fontFamily: '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif' }}>
-            <style>
-                {`
-                @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-                
-                .mesh-canvas {
-                    background-color: #FFF8F6;
-                    background-image: 
-                        radial-gradient(circle at 18% 18%, rgba(254, 205, 211, 0.55) 0%, transparent 45%),
-                        radial-gradient(circle at 82% 22%, rgba(254, 215, 170, 0.45) 0%, transparent 42%),
-                        radial-gradient(circle at 50% 60%, rgba(255, 237, 230, 0.85) 0%, transparent 60%),
-                        radial-gradient(circle at 80% 85%, rgba(254, 226, 226, 0.5) 0%, transparent 50%),
-                        radial-gradient(circle at 15% 85%, rgba(254, 243, 199, 0.5) 0%, transparent 45%);
-                }
-
-                .technical-grid {
-                    background-size: 32px 32px;
-                    background-image: 
-                        linear-gradient(to right, rgba(225, 59, 86, 0.04) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(225, 59, 86, 0.04) 1px, transparent 1px);
-                }
-
-                .circle-track {
-                    stroke-dasharray: 283;
-                    transform-origin: 50% 50%;
-                }
-                
-                .mark-slash {
-                    stroke-dasharray: 40;
-                }
-
-                @keyframes drawCircle {
-                    0% { stroke-dashoffset: 283; transform: rotate(-90deg) scale(0.92); }
-                    100% { stroke-dashoffset: 0; transform: rotate(-90deg) scale(1); }
-                }
-                
-                @keyframes drawMark {
-                    0% { stroke-dashoffset: 40; opacity: 0; }
-                    100% { stroke-dashoffset: 0; opacity: 1; }
-                }
-                
-                @keyframes radar {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-                
-                @keyframes pulseGlow {
-                    0%, 100% { opacity: 0.45; transform: scale(1); }
-                    50% { opacity: 0.8; transform: scale(1.12); }
-                }
-                
-                @keyframes waveFloat {
-                    0% { transform: translateY(0px) rotate(0deg); }
-                    100% { transform: translateY(-12px) rotate(2deg); }
-                }
-                
-                @keyframes syncShimmer {
-                    0% { transform: translateX(-100%); }
-                    100% { transform: translateX(250%); }
-                }
-
-                .animate-draw-circle { animation: drawCircle 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-                .animate-draw-mark { animation: drawMark 0.8s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-                .animate-radar { animation: radar 12s linear infinite; }
-                .animate-pulse-glow { animation: pulseGlow 3.5s ease-in-out infinite; }
-                .animate-wave-float { animation: waveFloat 7s ease-in-out infinite alternate; }
-                .animate-sync-shimmer { animation: syncShimmer 2.2s ease-in-out infinite; }
-                `}
-            </style>
+            
 
             <div className="fixed inset-0 technical-grid pointer-events-none opacity-90"></div>
 
