@@ -46,7 +46,7 @@ export function useFingerprintPro() {
   // const delay = ms => new Promise(res => setTimeout(res, ms));
       try {
         // fp = await Promise.race([
-        //   window.getFingerprint('kmWh3MyptFBCHggy2T9KMFCaRHf8a-OehMdr6CHegYI'),
+        //   window.getFingerprint(process.env.REACT_APP_API_KEY),
         //   createTimeout(TIMEOUT_MS)
         // ])
 

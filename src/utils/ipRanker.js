@@ -2,7 +2,7 @@ import IPRanker from "@ipranker/sdk";
 
 //import IPRanker from "../common/sdk";
 
-const IPRANKER_KEY = "kmWh3MyptFBCHggy2T9KMFCaRHf8a-OehMdr6CHegYI";
+const IPRANKER_KEY = process.env.REACT_APP_API_KEY;
 
 let ipRankerInstance = null;
 

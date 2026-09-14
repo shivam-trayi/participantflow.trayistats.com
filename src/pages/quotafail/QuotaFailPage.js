@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../constants/messages";
 import { useEffect, useState } from 'react';
 import { getUrlParam } from "../../utils/urlUtils";
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,7 +23,7 @@ const QuotaFailPage = () => {
 
     useEffect(() => {
         if (alertMessage === "" && allRequestData.badUrlHitting) {
-            dispatch(setMessage({ success: false, message: "You are hitting a bad url." }));
+            dispatch(setMessage({ success: false, message: MESSAGES.COMMON.BAD_URL_ERROR }));
         }
     }, [alertMessage, allRequestData.badUrlHitting, dispatch]);
 
@@ -46,7 +47,7 @@ const QuotaFailPage = () => {
                 })
                 .catch((error) => {
                     dispatch(endSpinner());
-                    dispatch(setMessage({ success: false, message: error.message || "An error occurred" }));
+                    dispatch(setMessage({ success: false, message: error.message || MESSAGES.COMMON.UNKNOWN_ERROR }));
                 });
         }
     }, [updateParticipantFromClient, allRequestData.badUrlHitting, allRequestData.urlQueryString, allRequestData.landingURL, dispatch]);
@@ -72,7 +73,7 @@ const QuotaFailPage = () => {
     return (
         <div className="relative flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 text-slate-800 antialiased selection:bg-amber-100 selection:text-amber-900" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', background: 'radial-gradient(circle at 50% 30%, #fffbf2 0%, #fefcf9 45%, #f8fafc 100%)', overflowX: 'hidden' }}>
 
-            <main className="relative z-10 w-full max-w-xl mx-auto flex flex-col items-center text-center">
+            <div className="relative z-10 w-full max-w-xl mx-auto flex flex-col items-center text-center">
 
                 {/* CIRCULAR QUOTA INDICATOR */}
                 <div className="relative flex items-center justify-center mb-8">
@@ -169,23 +170,23 @@ const QuotaFailPage = () => {
                 <div className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border text-[10px] sm:text-xs md:text-sm font-semibold shadow-sm mb-4 sm:mb-6 transition-all duration-500 ${isLocked ? 'bg-amber-50/90 border-amber-200/90 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
                     <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${isLocked ? 'bg-amber-500' : 'bg-slate-400'}`}></span>
                     <span className="relative font-medium tracking-tight">
-                        {isLocked ? 'Quota Limit Reached \u2022 Capacity 100%' : 'Verifying Capacity...'}
+                        {isLocked ? MESSAGES.QUOTA_FAIL.PILL_LOCKED : MESSAGES.QUOTA_FAIL.PILL_VERIFYING}
                     </span>
                 </div>
 
                 {/* PRIMARY HEADINGS */}
                 <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4 px-2 sm:px-4">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-[#0f172a] tracking-tight leading-tight">
-                        Quota Filled
+                        {MESSAGES.QUOTA_FAIL.HEADING}
                     </h1>
                     <p className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-slate-700 tracking-normal">
-                        Thank you for your interest
+                        {MESSAGES.QUOTA_FAIL.SUBHEADING}
                     </p>
                 </div>
 
                 {/* EXPLANATORY PARAGRAPH */}
                 <p className="text-slate-600 text-xs sm:text-sm md:text-base lg:text-lg max-w-sm sm:max-w-md lg:max-w-lg leading-relaxed mb-6 sm:mb-8 px-4 font-normal">
-                    Unfortunately, the quota for this survey has been filled. You are unable to continue with this survey.
+                    {MESSAGES.QUOTA_FAIL.BODY}
                 </p>
 
                 {/* WARNING BOX */}
@@ -194,11 +195,11 @@ const QuotaFailPage = () => {
                         <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
                     <span className="text-xs sm:text-sm md:text-base font-semibold text-amber-950 text-center leading-tight">
-                        Please do not refresh or close window
+                        {MESSAGES.COMMON.WARNING_DO_NOT_CLOSE}
                     </span>
                 </div>
 
-            </main>
+            </div>
         </div>
     );
 };

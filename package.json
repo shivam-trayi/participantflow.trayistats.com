@@ -28,6 +28,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:staging": "env-cmd -f .env.staging react-scripts start",
+    "start:production": "env-cmd -f .env.production react-scripts start",
     "build": "set \"CI=false\" && set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "build:staging": "set \"CI=false\" && set \"GENERATE_SOURCEMAP=false\" && env-cmd -f .env.staging react-scripts build",
     "build:production": "set \"CI=false\" && set \"GENERATE_SOURCEMAP=false\" && env-cmd -f .env.production react-scripts build",
