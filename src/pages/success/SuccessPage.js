@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../constants/messages";
 import { useEffect, useState, useRef } from 'react';
 import { getUrlParam } from "../../utils/urlUtils";
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,7 +23,7 @@ const SuccessPage = () => {
 
     useEffect(() => {
         if (!alertMessage?.message && allRequestData.badUrlHitting) {
-            dispatch(setMessage({ success: false, message: "You are hitting a bad url." }))
+            dispatch(setMessage({ success: false, message: MESSAGES.COMMON.BAD_URL_ERROR }))
         }
     }, [alertMessage, allRequestData.badUrlHitting, dispatch]);
 
@@ -47,7 +48,7 @@ const SuccessPage = () => {
                 })
                 .catch((error) => {
                     dispatch(endSpinner());
-                    dispatch(setMessage({ success: false, message: error.message || "An error occurred" }));
+                    dispatch(setMessage({ success: false, message: error.message || MESSAGES.COMMON.UNKNOWN_ERROR }));
                 });
         }
     }, [updateParticipantFromClient, allRequestData.badUrlHitting, allRequestData.urlQueryString, allRequestData.landingURL, dispatch])
@@ -340,15 +341,15 @@ const SuccessPage = () => {
 
                     <h1 className="animate-fade-1 text-4xl sm:text-5xl md:text-[3.6rem] font-extrabold tracking-tight mb-3 sm:mb-4 pb-1 select-none inline-flex items-center justify-center gap-2 sm:gap-3 flex-wrap drop-shadow-sm leading-tight">
                         <span id="popperIcon" className="animate-popper text-3xl sm:text-4xl md:text-5xl select-none transition-transform hover:scale-125 cursor-pointer" title="Tap to celebrate!" aria-hidden="true">🎉</span>
-                        <span className="shimmer-gradient-text">Congratulations!</span>
+                        <span className="shimmer-gradient-text">{MESSAGES.SUCCESS.HEADING}</span>
                     </h1>
 
                     <h2 className="animate-fade-2 text-lg sm:text-xl md:text-2xl font-bold text-slate-700 tracking-normal mb-3">
-                        Survey Completed Successfully
+                        {MESSAGES.SUCCESS.SUBHEADING}
                     </h2>
 
                     <p className="animate-fade-3 text-sm sm:text-base text-slate-500 font-normal leading-relaxed max-w-md mx-auto mb-8 sm:mb-9 px-3">
-                        Thank you for completing the survey. Your opinion helps shape the world around you.
+                        {MESSAGES.SUCCESS.BODY}
                     </p>
 
                     <aside className="animate-fade-4 w-full max-w-md mx-auto inline-flex items-center justify-center gap-2.5 sm:gap-3 px-4 py-3 sm:px-5 sm:py-3.5 rounded-2xl bg-amber-50/90 border border-amber-200/90 shadow-sm shadow-amber-500/5 backdrop-blur-md transition-all" role="alert" aria-live="polite">
@@ -358,7 +359,7 @@ const SuccessPage = () => {
                             </svg>
                         </span>
                         <span className="text-xs sm:text-sm font-medium text-amber-800 tracking-normal text-left sm:text-center">
-                            Please do not close this window or refresh the page
+                            {MESSAGES.COMMON.WARNING_DO_NOT_CLOSE}
                         </span>
                     </aside>
                 </section>

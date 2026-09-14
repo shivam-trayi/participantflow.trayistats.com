@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../constants/messages";
 import { useEffect, useState } from 'react';
 import { getUrlParam } from "../../utils/urlUtils";
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,7 +22,7 @@ const SecurityFailPage = () => {
 
     useEffect(() => {
         if (alertMessage === "" && allRequestData.badUrlHitting) {
-            dispatch(setMessage({ success: false, message: "You are hitting a bad url." }));
+            dispatch(setMessage({ success: false, message: MESSAGES.COMMON.BAD_URL_ERROR }));
         }
     }, [alertMessage, allRequestData.badUrlHitting, dispatch]);
 
@@ -45,7 +46,7 @@ const SecurityFailPage = () => {
                 })
                 .catch((error) => {
                     dispatch(endSpinner());
-                    dispatch(setMessage({ success: false, message: error.message || "An error occurred" }));
+                    dispatch(setMessage({ success: false, message: error.message || MESSAGES.COMMON.UNKNOWN_ERROR }));
                 });
         }
     }, [updateParticipantFromClient, allRequestData.badUrlHitting, allRequestData.urlQueryString, allRequestData.landingURL, dispatch]);
@@ -67,7 +68,7 @@ const SecurityFailPage = () => {
             {/* Atmospheric ambient light caustic (Always Red) */}
             <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] rounded-full blur-[130px] pointer-events-none -z-10 bg-red-100/70"></div>
 
-            <main className="w-full max-w-lg mx-auto text-center flex flex-col items-center relative z-10">
+            <div className="w-full max-w-lg mx-auto text-center flex flex-col items-center relative z-10">
 
                 {/* Main Security HUD Visual Indicator */}
                 <div className="relative mb-14 flex items-center justify-center select-none">
@@ -127,14 +128,14 @@ const SecurityFailPage = () => {
                             <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-red-600"></span>
                         </span>
                         <span className="font-mono uppercase tracking-wider text-[10px] sm:text-xs">
-                            SECURITY CHECK FAILED
+                            {MESSAGES.SECURITY_FAIL.PILL_FAILED}
                         </span>
                     </div>
                 </div>
 
                 {/* Primary Headline */}
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-5 sm:mb-8 text-slate-950 leading-tight px-2">
-                    Security Check Failed
+                    {MESSAGES.SECURITY_FAIL.HEADING}
                 </h1>
 
                 {/* Explanatory Narrative */}
@@ -142,7 +143,7 @@ const SecurityFailPage = () => {
                     This survey cannot be continued because your security verification has failed. Access has been blocked.
                 </p>
 
-                {/* Access Blocked Notification Notice */}
+                {/* {MESSAGES.SECURITY_FAIL.WARNING_TITLE} Notification Notice */}
                 <div className="w-[90%] sm:w-full max-w-xs sm:max-w-md p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-red-50/95 border border-red-200/90 text-left shadow-sm shadow-red-500/5 mx-auto relative z-20">
                     <div className="flex items-start gap-2.5 sm:gap-3.5">
                         <div className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-red-100 text-red-600 shrink-0 mt-0.5 border border-red-200 shadow-sm">
@@ -154,17 +155,17 @@ const SecurityFailPage = () => {
                         </div>
                         <div className="flex-1">
                             <div className="flex items-center justify-between mb-1 sm:mb-1.5">
-                                <h3 className="text-xs sm:text-sm font-bold text-red-900 tracking-wide uppercase">Access Blocked</h3>
-                                <span className="text-[9px] sm:text-[10px] font-mono text-red-500/70 uppercase tracking-widest hidden sm:inline-block">Security Protocol</span>
+                                <h3 className="text-xs sm:text-sm font-bold text-red-900 tracking-wide uppercase">{MESSAGES.SECURITY_FAIL.WARNING_TITLE}</h3>
+                                <span className="text-[9px] sm:text-[10px] font-mono text-red-500/70 uppercase tracking-widest hidden sm:inline-block">{MESSAGES.SECURITY_FAIL.WARNING_SUBTITLE}</span>
                             </div>
                             <p className="text-xs sm:text-sm leading-relaxed text-red-800/90 font-medium">
-                                This survey cannot be continued because your security verification has failed. Access has been blocked to protect survey integrity.
+                                {MESSAGES.SECURITY_FAIL.BODY}
                             </p>
                         </div>
                     </div>
                 </div>
 
-            </main>
+            </div>
         </div>
     );
 };

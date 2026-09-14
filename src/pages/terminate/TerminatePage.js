@@ -1,3 +1,4 @@
+import { MESSAGES } from "../../constants/messages";
 import { useEffect, useState } from 'react';
 import { getUrlParam } from "../../utils/urlUtils";
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +27,7 @@ const TerminatePage = () => {
 
     useEffect(() => {
         if (!alertMessage && allRequestData.badUrlHitting) {
-            dispatch(setMessage({ success: false, message: "We encountered an unexpected issue. Please contact support." }))
+            dispatch(setMessage({ success: false, message: MESSAGES.COMMON.BAD_URL_ERROR }))
         }
     }, [alertMessage, allRequestData.badUrlHitting, dispatch]);
 
@@ -60,7 +61,7 @@ const TerminatePage = () => {
                 })
                 .catch((error) => {
                     dispatch(endSpinner());
-                    dispatch(setMessage({ success: false, message: error.message || "An error occurred" }));
+                    dispatch(setMessage({ success: false, message: error.message || MESSAGES.COMMON.UNKNOWN_ERROR }));
                 });
         }
     }, [updateParticipantFromClient, allRequestData.badUrlHitting, allRequestData.urlQueryString, allRequestData.landingURL, dispatch]);
@@ -85,7 +86,7 @@ const TerminatePage = () => {
             <div className="fixed top-1/4 -left-20 w-80 h-80 rounded-full bg-rose-400/15 blur-3xl pointer-events-none animate-wave-float"></div>
             <div className="fixed bottom-1/4 -right-20 w-96 h-96 rounded-full bg-orange-300/15 blur-3xl pointer-events-none animate-wave-float" style={{ animationDelay: '-3.5s' }}></div>
 
-            <main className="w-full max-w-[620px] z-10 text-center flex flex-col items-center px-4 py-8">
+            <div className="w-full max-w-[620px] z-10 text-center flex flex-col items-center px-4 py-8">
 
                 <div className="relative mb-5 sm:mb-6 flex items-center justify-center">
                     <div className="absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-rose-500/10 animate-pulse-glow pointer-events-none"></div>
@@ -124,15 +125,15 @@ const TerminatePage = () => {
                 </div>
 
                 <h1 className="text-4xl sm:text-5xl md:text-[52px] font-extrabold tracking-tight text-[#E13B56] mb-2.5 drop-shadow-sm leading-tight">
-                    Thank You
+                    {MESSAGES.TERMINATE.HEADING}
                 </h1>
 
                 <h2 className="text-base sm:text-lg md:text-xl font-bold text-slate-700 tracking-tight mb-3">
-                    We appreciate your time
+                    {MESSAGES.TERMINATE.SUBHEADING}
                 </h2>
 
                 <p className="text-xs sm:text-sm md:text-[15px] leading-relaxed text-slate-500 max-w-[480px] mx-auto mb-7 font-normal">
-                    Unfortunately, you were not a perfect match for this specific survey. However, your participation is valuable to us.
+                    {MESSAGES.TERMINATE.BODY}
                 </p>
 
                 <div className="relative w-full max-w-sm sm:max-w-md overflow-hidden rounded-2xl bg-amber-100/60 border border-amber-300/70 shadow-sm backdrop-blur-sm">
@@ -149,14 +150,14 @@ const TerminatePage = () => {
                             </svg>
                         </div>
                         <span className="text-xs sm:text-sm font-semibold tracking-tight text-center select-text">
-                            Please do not refresh or close window
+                            {MESSAGES.COMMON.WARNING_DO_NOT_CLOSE}
                         </span>
                         <div className="shrink-0 flex items-center ml-0.5" title="Synchronizing status">
                             <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
 
             {showLandingPage && (
                 <LandingPage
