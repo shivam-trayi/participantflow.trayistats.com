@@ -236,17 +236,17 @@ const SuccessPage = () => {
         }
         startRenderLoop();
 
-        let burstTimeout1 = setTimeout(() => {
+        
             const cx = width / 2;
             const cy = height / 2 - 50;
             createBurst(cx, cy, 48, 1);
             playGentleVictoryChime();
 
-            setTimeout(() => {
+
                 createBurst(cx - 70, cy - 20, 24, 0.85);
                 createBurst(cx + 70, cy - 20, 24, 0.85);
-            }, 320);
-        }, 350);
+
+
 
         const handlePointerDown = (e) => {
             createBurst(e.clientX, e.clientY, 18, 0.9);
@@ -272,7 +272,7 @@ const SuccessPage = () => {
             window.removeEventListener('pointerdown', handlePointerDown);
             if (popper) popper.removeEventListener('click', handlePopperClick);
             cancelAnimationFrame(animationFrame);
-            clearTimeout(burstTimeout1);
+
         };
     }, []);
 
@@ -314,7 +314,7 @@ const SuccessPage = () => {
                         <div className="absolute bottom-2 -right-12 sm:-right-16 w-2.5 h-2.5 bg-[#10B981] opacity-85 rotate-45 rounded-[1.5px] shadow-sm animate-float-1 pointer-events-none" aria-hidden="true"></div>
 
                         <div className="absolute -top-7 -left-5 text-amber-400 text-xs animate-twinkle pointer-events-none" aria-hidden="true">?</div>
-                        <div className="absolute -bottom-4 right-1 text-cyan-400 text-xs animate-twinkle pointer-events-none" style={{ animationDelay: '1.4s' }} aria-hidden="true">?</div>
+                        <div className="absolute -bottom-4 right-1 text-cyan-400 text-xs animate-twinkle pointer-events-none" aria-hidden="true">?</div>
 
                         <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full p-[3.5px] gradient-ring-border shadow-2xl shadow-indigo-500/25 animate-badge-entrance animate-achievement-pulse transition-transform duration-300 hover:scale-105">
                             <div className="w-full h-full rounded-full bg-white flex items-center justify-center backdrop-blur-md transition-colors duration-300 relative overflow-hidden">
@@ -339,9 +339,9 @@ const SuccessPage = () => {
                         </div>
                     </div>
 
-                    <h1 className="animate-fade-1 text-4xl sm:text-5xl md:text-[3.6rem] font-extrabold tracking-tight mb-3 sm:mb-4 pb-1 select-none inline-flex items-center justify-center gap-2 sm:gap-3 flex-wrap drop-shadow-sm leading-tight">
+                    <h1 className="animate-fade-1 text-4xl sm:text-5xl md:text-[3.6rem] font-extrabold tracking-tight mb-3 sm:mb-4 pb-1 select-none inline-flex items-center justify-center gap-2 sm:gap-3 flex-wrap drop-shadow-sm leading-normal">
                         <span id="popperIcon" className="animate-popper text-3xl sm:text-4xl md:text-5xl select-none transition-transform hover:scale-125 cursor-pointer" title="Tap to celebrate!" aria-hidden="true">🎉</span>
-                        <span className="shimmer-gradient-text">{MESSAGES.SUCCESS.HEADING}</span>
+                        <span className="shimmer-gradient-text pb-2 px-1">{MESSAGES.SUCCESS.HEADING}</span>
                     </h1>
 
                     <h2 className="animate-fade-2 text-lg sm:text-xl md:text-2xl font-bold text-slate-700 tracking-normal mb-3">

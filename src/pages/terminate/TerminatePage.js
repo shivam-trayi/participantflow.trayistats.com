@@ -84,7 +84,7 @@ const TerminatePage = () => {
             <div className="fixed inset-0 technical-grid pointer-events-none opacity-90"></div>
 
             <div className="fixed top-1/4 -left-20 w-80 h-80 rounded-full bg-rose-400/15 blur-3xl pointer-events-none animate-wave-float"></div>
-            <div className="fixed bottom-1/4 -right-20 w-96 h-96 rounded-full bg-orange-300/15 blur-3xl pointer-events-none animate-wave-float" style={{ animationDelay: '-3.5s' }}></div>
+            <div className="fixed bottom-1/4 -right-20 w-96 h-96 rounded-full bg-orange-300/15 blur-3xl pointer-events-none animate-wave-float"></div>
 
             <div className="w-full max-w-[620px] z-10 text-center flex flex-col items-center px-4 py-8">
 

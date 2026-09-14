@@ -8,7 +8,7 @@ const OptionCard = ({ option, isSelected, onClick, idx, isMulti = false }) => {
             key={`${option.OId}-${idx}`}
             type="button"
             onClick={onClick}
-            style={{ animationDelay: `${Math.min(idx * 30, 200)}ms` }}
+            
             className={`animate-option-item relative w-full min-h-[46px] sm:min-h-[52px] px-3.5 py-3 sm:px-4 sm:py-3.5 mb-2 sm:mb-2.5 rounded-2xl border text-left flex items-center gap-3 sm:gap-4 transition-all duration-200 group cursor-pointer focus:outline-none hover:-translate-y-[1px] ${
                 isSelected
                     ? themeClasses.optionCard.selected

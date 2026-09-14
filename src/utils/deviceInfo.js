@@ -2,15 +2,15 @@ import * as rdd from 'react-device-detect';
 import { getIPRankerInstance } from './ipRanker';
 
 const getCookie = (name) => {
-    const value = ; $document.cookie;
-    const parts = value.split(; $name=);
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
 };
 
 const setCookie = (name, value, days = 365) => {
     const expires = new Date(Date.now() + (days * 24 * 60 * 60 * 1000)).toUTCString();
-    document.cookie = ${name}=${value}; expires=${expires}; path=/; SameSite=Lax;
+    document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
 };
 
 export const getCpuArchitecture = async () => {
@@ -63,6 +63,6 @@ export const getDeviceInfo = async () => {
         ScreenWidth: window.screen.width || 0,
         ScreenHeight: window.screen.height || 0,
         platformVisitorId: visitorId,
-        Viewport: ${window.innerWidth}x${window.innerHeight}
+        Viewport: `${window.innerWidth}x${window.innerHeight}`
     };
 };
