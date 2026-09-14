@@ -170,9 +170,10 @@ const TerminatePage = () => {
 function getUrlParam(parameter, defaultvalue) {
     var urlparameter = defaultvalue;
     if (window.location.href.indexOf(parameter) > -1) {
-        urlparameter = getUrlVars()[parameter];
+        var parsed = getUrlVars()[parameter];
+        urlparameter = parsed !== undefined ? parsed : defaultvalue;
     }
-    return urlparameter;
+    return urlparameter || defaultvalue;
 }
 
 function getUrlVars() {
