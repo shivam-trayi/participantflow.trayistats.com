@@ -261,3 +261,129 @@
 .qf-badge-pop {
     animation: qfBadgePop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+
+/* =========================================
+   SECURITY FAIL PAGE - HUD & TRANSITIONS
+========================================= */
+
+@keyframes sfLaserSweep {
+    0% { top: 0%; opacity: 0.2; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { top: 96%; opacity: 0.2; }
+}
+
+@keyframes sfShockwavePulse {
+    0% { transform: scale(0.65); opacity: 0.9; border-width: 4px; }
+    50% { opacity: 0.5; border-width: 2px; }
+    100% { transform: scale(2.4); opacity: 0; border-width: 1px; }
+}
+
+@keyframes sfFailureJolt {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    10% { transform: translate(-8px, 2px) scale(0.97); }
+    22% { transform: translate(8px, -2px) scale(1.02); }
+    35% { transform: translate(-6px, -1px) scale(0.99); }
+    50% { transform: translate(6px, 2px) scale(1.01); }
+    68% { transform: translate(-3px, 1px) scale(1); }
+    85% { transform: translate(2px, -1px) scale(1); }
+}
+
+@keyframes sfSpinSlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes sfReverseSpin {
+    0% { transform: rotate(360deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.sf-cross-line {
+    stroke-dasharray: 45;
+    stroke-dashoffset: 45;
+    transition: stroke-dashoffset 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sf-cross-line.sf-drawn {
+    stroke-dashoffset: 0;
+}
+
+.sf-laser-beam {
+    animation: sfLaserSweep 1.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+
+.sf-failure-shockwave {
+    animation: sfShockwavePulse 0.9s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+.sf-shake-active {
+    animation: sfFailureJolt 0.52s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.sf-cyber-grid {
+    background-image: 
+        radial-gradient(circle at 50% 50%, transparent 40%, #fef2f2 95%),
+        linear-gradient(to right, rgba(254, 202, 202, 0.4) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(254, 202, 202, 0.4) 1px, transparent 1px);
+    background-color: #fffafb;
+    background-size: 100% 100%, 32px 32px, 32px 32px;
+}
+
+.sf-spin-slow {
+    animation: sfSpinSlow 16s linear infinite;
+}
+
+.sf-reverse-spin {
+    animation: sfReverseSpin 20s linear infinite;
+}
+
+
+/* =========================================
+   SECURITY FAIL PAGE REDESIGN
+========================================= */
+
+@keyframes sfScanSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes sfShieldSlam {
+    0% { transform: scale(1.2); opacity: 0; }
+    40% { transform: scale(0.9); opacity: 1; }
+    60% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes sfErrorShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px) rotate(-2deg); }
+    40% { transform: translateX(4px) rotate(2deg); }
+    60% { transform: translateX(-2px) rotate(-1deg); }
+    80% { transform: translateX(2px) rotate(1deg); }
+}
+
+.sf-scan-spin {
+    animation: sfScanSpin 2s linear infinite;
+}
+
+.sf-shield-slam {
+    animation: sfShieldSlam 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.sf-error-shake {
+    animation: sfErrorShake 0.4s ease-in-out;
+}
+
+.sf-delay-text {
+    transition-delay: 0.2s;
+}
+
+.sf-delay-sub {
+    transition-delay: 0.35s;
+}
+
+.sf-delay-desc {
+    transition-delay: 0.5s;
+}
