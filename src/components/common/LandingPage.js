@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/animations.css";
+import Button from "../button/Button";
 
 const LandingPage = ({ newTabURL, redirectURL }) => {
     const [seconds, setSeconds] = useState(5);
@@ -60,13 +61,16 @@ const LandingPage = ({ newTabURL, redirectURL }) => {
                     </div>
                 </div>
 
-                <div className="flex justify-center gap-5 relative z-10">
-                    <button className="border-none py-[15px] px-[34px] rounded-xl cursor-pointer text-[17px] font-semibold bg-[#ececec] hover:bg-[#dadada] hover:-translate-y-0.5 transition-all text-slate-700">
+                <div className="flex justify-center gap-4 relative z-10">
+                    <Button 
+                        className="!bg-slate-100 !text-slate-700 hover:!bg-slate-200 !shadow-none !border-none !h-[54px]"
+                        onClick={() => window.location.replace(redirectURL)}
+                    >
                         ? Cancel
-                    </button>
-                    <button className="border-none py-[15px] px-[34px] rounded-xl cursor-pointer text-[17px] font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 shadow-[0_10px_20px_rgba(22,119,255,0.35)] hover:shadow-[0_14px_28px_rgba(22,119,255,0.45)] hover:-translate-y-1 hover:scale-[1.03] transition-all">
+                    </Button>
+                    <Button className="!h-[54px]">
                         ?? Earn More
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

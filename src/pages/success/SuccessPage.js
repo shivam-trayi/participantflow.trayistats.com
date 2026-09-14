@@ -7,6 +7,7 @@ import { startSpinner, endSpinner } from "../../store/slices/loaderSlice";
 import { requestData } from "../../utils/requestData";
 import { updateParticipantFromClientAction } from "../../store/slices/participantSlice";
 import "../../styles/animations.css";
+import { themeClasses } from "../../theme/themeConfig";
 
 const SuccessPage = () => {
     const dispatch = useDispatch();
@@ -288,7 +289,7 @@ const SuccessPage = () => {
     }
 
     return (
-        <div className="h-screen w-full font-sans antialiased text-slate-800 bg-[#f8faff] transition-colors duration-500 select-none overflow-x-hidden cursor-default" style={{ fontFamily: '"Plus Jakarta Sans", Inter, system-ui, sans-serif' }}>
+        <div className={`h-screen w-full font-sans antialiased text-slate-800 transition-colors duration-500 select-none overflow-x-hidden cursor-default ${themeClasses.mainBackground}`} style={{ fontFamily: '"Plus Jakarta Sans", Inter, system-ui, sans-serif' }}>
 
 
             <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
@@ -321,15 +322,13 @@ const SuccessPage = () => {
                                 <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/45 to-white/0 pointer-events-none"></div>
 
                                 {loading ? (
-                                    <div className="w-12 h-12 rounded-full border-4 border-slate-200 border-t-indigo-500 animate-spin relative z-10"></div>
+                                    <div className="w-12 h-12 rounded-full border-4 border-slate-200 border-t-brand-from animate-spin relative z-10"></div>
                                 ) : (
                                     <svg className="w-11 h-11 sm:w-[52px] sm:h-[52px] relative z-10" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <defs>
                                             <linearGradient id="checkGradient" x1="12" y1="24" x2="36" y2="24" gradientUnits="userSpaceOnUse">
-                                                <stop offset="0%" stopColor="#7C3AED" />
-                                                <stop offset="40%" stopColor="#4F46E5" />
-                                                <stop offset="75%" stopColor="#06B6D4" />
-                                                <stop offset="100%" stopColor="#10B981" />
+                                                <stop offset="0%" stopColor="var(--brand-from, #6b42d3)" />
+                                                <stop offset="100%" stopColor="var(--brand-to, #455cd9)" />
                                             </linearGradient>
                                         </defs>
                                         <path className="animate-check" d="M13.5 24.5L21 32L34.5 16.5" stroke="url(#checkGradient)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -339,16 +338,16 @@ const SuccessPage = () => {
                         </div>
                     </div>
 
-                    <h1 className="animate-fade-1 text-4xl sm:text-5xl md:text-[3.6rem] font-extrabold tracking-tight mb-3 sm:mb-4 pb-1 select-none inline-flex items-center justify-center gap-2 sm:gap-3 flex-wrap drop-shadow-sm leading-normal">
+                    <h1 className={`animate-fade-1 mb-3 sm:mb-4 pb-1 select-none inline-flex items-center justify-center gap-2 sm:gap-3 flex-wrap drop-shadow-sm ${themeClasses.typography.displayLarge}`}>
                         <span id="popperIcon" className="animate-popper text-3xl sm:text-4xl md:text-5xl select-none transition-transform hover:scale-125 cursor-pointer" title="Tap to celebrate!" aria-hidden="true">🎉</span>
                         <span className="shimmer-gradient-text pb-2 px-1">{MESSAGES.SUCCESS.HEADING}</span>
                     </h1>
 
-                    <h2 className="animate-fade-2 text-lg sm:text-xl md:text-2xl font-bold text-slate-700 tracking-normal mb-3">
+                    <h2 className={`animate-fade-2 tracking-normal mb-3 ${themeClasses.text.primary} ${themeClasses.typography.headlineMedium}`}>
                         {MESSAGES.SUCCESS.SUBHEADING}
                     </h2>
 
-                    <p className="animate-fade-3 text-sm sm:text-base text-slate-500 font-normal leading-relaxed max-w-md mx-auto mb-8 sm:mb-9 px-3">
+                    <p className={`animate-fade-3 max-w-md mx-auto mb-8 sm:mb-9 px-3 ${themeClasses.text.secondary} ${themeClasses.typography.bodyLarge}`}>
                         {MESSAGES.SUCCESS.BODY}
                     </p>
 
@@ -358,7 +357,7 @@ const SuccessPage = () => {
                                 <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                             </svg>
                         </span>
-                        <span className="text-xs sm:text-sm font-medium text-amber-800 tracking-normal text-left sm:text-center">
+                        <span className={`font-medium text-amber-800 tracking-normal text-left sm:text-center ${themeClasses.typography.bodySmall}`}>
                             {MESSAGES.COMMON.WARNING_DO_NOT_CLOSE}
                         </span>
                     </aside>

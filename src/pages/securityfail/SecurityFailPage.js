@@ -7,6 +7,7 @@ import { startSpinner, endSpinner } from "../../store/slices/loaderSlice";
 import { requestData } from "../../utils/requestData";
 import { updateParticipantFromClientAction } from "../../store/slices/participantSlice";
 import "../../styles/animations.css";
+import { themeClasses } from "../../theme/themeConfig";
 
 const SecurityFailPage = () => {
     const dispatch = useDispatch();
@@ -139,7 +140,7 @@ const SecurityFailPage = () => {
                 </h1>
 
                 {/* Explanatory Narrative */}
-                <p className="text-base sm:text-lg leading-relaxed max-w-md mx-auto mb-6 text-slate-700 font-medium">
+                <p className={`${themeClasses.typography.bodyLarge} leading-relaxed max-w-md mx-auto mb-6 text-slate-700 font-medium`}>
                     This survey cannot be continued because your security verification has failed. Access has been blocked.
                 </p>
 

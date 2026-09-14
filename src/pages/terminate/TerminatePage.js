@@ -8,6 +8,7 @@ import { requestData } from "../../utils/requestData";
 import { updateParticipantFromClientAction } from "../../store/slices/participantSlice";
 import LandingPage from "../../components/common/LandingPage";
 import "../../styles/animations.css";
+import { themeClasses } from "../../theme/themeConfig";
 
 const TerminatePage = () => {
     const dispatch = useDispatch();
@@ -124,11 +125,11 @@ const TerminatePage = () => {
                     </div>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl md:text-[52px] font-extrabold tracking-tight text-[#E13B56] mb-2.5 drop-shadow-sm leading-tight">
+                <h1 className={`${themeClasses.typography.displayLarge} text-[#E13B56] mb-2.5 drop-shadow-sm leading-tight`}>
                     {MESSAGES.TERMINATE.HEADING}
                 </h1>
 
-                <h2 className="text-base sm:text-lg md:text-xl font-bold text-slate-700 tracking-tight mb-3">
+                <h2 className={`${themeClasses.typography.titleLarge} md:text-xl font-bold text-slate-700 tracking-tight mb-3`}>
                     {MESSAGES.TERMINATE.SUBHEADING}
                 </h2>
 

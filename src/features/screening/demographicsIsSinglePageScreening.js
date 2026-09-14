@@ -13,36 +13,34 @@ import { startSpinner } from "../../store/slices/loaderSlice";
 import DragAndDropGame from './ui/DragAndDropGame';
 import SurveyQuestions from './ui/SurveyQuestions';
 import { COUNTRY_CODE, ZIP_REGEX, ZIP_EXAMPLES } from '../../utils/countrylangMapping';
-  
 import { getTranslationsByCountryId } from '../../locales';
 import useBotDetector from '../../hooks/useBotDetector';
 import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-
 import useDebounce from '../../hooks/useDebounce';
 
 
 const validateZipByCountry = (zip, langId) => {
-  const countryCode = COUNTRY_CODE[langId] || null;
-  const regex = ZIP_REGEX[countryCode];
-  if (!regex) return true;
-  return regex.test(zip);
+    const countryCode = COUNTRY_CODE[langId] || null;
+    const regex = ZIP_REGEX[countryCode];
+    if (!regex) return true;
+    return regex.test(zip);
 }
 
 function getNewModeInputTextElement(q, value, setVal, error, setErrors, onPasteDetected, onKeystroke, placeholderTranslations = {}) {
     return (
         <div className="w-full bg-white rounded-2xl border border-slate-200 shadow-xs p-4">
-            <input 
+            <input
                 type="text"
                 value={value || ""}
                 onChange={(e) => setVal(e.target.value)}
                 className="w-full h-11 sm:h-[50px] px-3.5 sm:px-4 text-[14px] sm:text-[15.5px] rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
                 placeholder={(typeof placeholderTranslations === "string" && placeholderTranslations) ? placeholderTranslations : "Type your answer here..."}
                 onCopy={(e) => { if (q?.IsZipValidate === 1 || q?.DemoId == 3) e.preventDefault(); }}
-                onPaste={(e) => { 
+                onPaste={(e) => {
                     if (onPasteDetected) onPasteDetected();
-                    if (q?.IsZipValidate === 1 || q?.DemoId == 3) e.preventDefault(); 
+                    if (q?.IsZipValidate === 1 || q?.DemoId == 3) e.preventDefault();
                 }}
                 onKeyDown={onKeystroke}
                 autoComplete="off"
@@ -57,14 +55,14 @@ function getNewModeRadioOptions(q, value, setVal) {
             {q.QuestionAnswerCodes.map((option, idx) => {
                 const isSelected = String(value) === String(option.OId);
                 return (
-                    <OptionCard 
-                            key={`${option.OId}-${idx}`}
-                            option={option}
-                            isSelected={isSelected}
-                            onClick={() => setVal(option.OId)}
-                            idx={idx}
-                            isMulti={false}
-                        />
+                    <OptionCard
+                        key={`${option.OId}-${idx}`}
+                        option={option}
+                        isSelected={isSelected}
+                        onClick={() => setVal(option.OId)}
+                        idx={idx}
+                        isMulti={false}
+                    />
                 );
             })}
         </div>
@@ -73,21 +71,21 @@ function getNewModeRadioOptions(q, value, setVal) {
 
 const ControlledDropdown = ({ q, value, setVal, searchQuery }) => {
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
-    
+
     const displayedOptions = useMemo(() => {
         if (!q || !q.QuestionAnswerCodes) return [];
         if (!debouncedSearchQuery.trim()) return q.QuestionAnswerCodes;
-        return q.QuestionAnswerCodes.filter(opt => 
+        return q.QuestionAnswerCodes.filter(opt =>
             opt.optionText.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
         );
     }, [q, debouncedSearchQuery]);
 
-    
+
 
     return (
         <div className="w-full flex flex-col">
-            
-            
+
+
             {displayedOptions.length === 0 ? (
                 <DataNotFound searchQuery={searchQuery} />
             ) : (
@@ -95,14 +93,14 @@ const ControlledDropdown = ({ q, value, setVal, searchQuery }) => {
                     {displayedOptions.map((option, idx) => {
                         const isSelected = String(value) === String(option.OId);
                         return (
-                            <OptionCard 
-                            key={`${option.OId}-${idx}`}
-                            option={option}
-                            isSelected={isSelected}
-                            onClick={() => setVal(option.OId)}
-                            idx={idx}
-                            isMulti={false}
-                        />
+                            <OptionCard
+                                key={`${option.OId}-${idx}`}
+                                option={option}
+                                isSelected={isSelected}
+                                onClick={() => setVal(option.OId)}
+                                idx={idx}
+                                isMulti={false}
+                            />
                         );
                     })}
                 </div>
@@ -113,16 +111,16 @@ const ControlledDropdown = ({ q, value, setVal, searchQuery }) => {
 
 const GetMultiSelectDropDown = ({ q, value, setVal, searchQuery }) => {
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
-    
+
     const displayedOptions = useMemo(() => {
         if (!q || !q.QuestionAnswerCodes) return [];
         if (!debouncedSearchQuery.trim()) return q.QuestionAnswerCodes;
-        return q.QuestionAnswerCodes.filter(opt => 
+        return q.QuestionAnswerCodes.filter(opt =>
             opt.optionText.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
         );
     }, [q, debouncedSearchQuery]);
 
-    
+
 
     const toggleSelect = (id) => {
         let selectedValues = value ? String(value).split(",") : [];
@@ -136,8 +134,8 @@ const GetMultiSelectDropDown = ({ q, value, setVal, searchQuery }) => {
 
     return (
         <div className="w-full flex flex-col">
-            
-            
+
+
             {displayedOptions.length === 0 ? (
                 <DataNotFound searchQuery={searchQuery} />
             ) : (
@@ -145,14 +143,14 @@ const GetMultiSelectDropDown = ({ q, value, setVal, searchQuery }) => {
                     {displayedOptions.map((option, idx) => {
                         const isSelected = value ? String(value).split(",").includes(String(option.OId)) : false;
                         return (
-                            <OptionCard 
-                            key={`${option.OId}-${idx}`}
-                            option={option}
-                            isSelected={isSelected}
-                            onClick={() => toggleSelect(option.OId)}
-                            idx={idx}
-                            isMulti={true}
-                        />
+                            <OptionCard
+                                key={`${option.OId}-${idx}`}
+                                option={option}
+                                isSelected={isSelected}
+                                onClick={() => toggleSelect(option.OId)}
+                                idx={idx}
+                                isMulti={true}
+                            />
                         );
                     })}
                 </div>
@@ -168,8 +166,6 @@ const DemographicsIsSinglePageScreening = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [canScrollMore, setCanScrollMore] = useState(false);
     const optionsContainerRef = useRef(null);
-    
-
     const [errors, setErrors] = useState({});
     const [isCopied, setIsCopied] = useState({});
     const [submissionAlert, setSubmissionAlert] = useState(false);
@@ -181,23 +177,23 @@ const DemographicsIsSinglePageScreening = () => {
     const [surveyResults, setSurveyResults] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-const q = allDemos?.allDemos?.[currentQuestionIndex];
+    const q = allDemos?.allDemos?.[currentQuestionIndex];
 
     useEffect(() => {
         setSearchQuery("");
     }, [currentQuestionIndex]);
 
-const displayedOptions = useMemo(() => {
+    const displayedOptions = useMemo(() => {
         if (!q || !q.QuestionAnswerCodes) return [];
         if (!searchQuery.trim()) return q.QuestionAnswerCodes;
-        return q.QuestionAnswerCodes.filter(opt => 
+        return q.QuestionAnswerCodes.filter(opt =>
             opt.optionText.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }, [q, searchQuery]);
 
-    
 
-        const isSearchEnabledForQuestion = useMemo(() => {
+
+    const isSearchEnabledForQuestion = useMemo(() => {
         if (!q || !q.QuestionAnswerCodes) return false;
         const options = q.QuestionAnswerCodes;
         if (options.length < 12) return false;
@@ -211,10 +207,10 @@ const displayedOptions = useMemo(() => {
         const el = optionsContainerRef.current;
         const contentChild = el.firstElementChild;
         if (!contentChild) return;
-        
+
         // Compare actual content height against container to avoid flex margin bugs
         const hasDomOverflow = contentChild.scrollHeight > el.clientHeight;
-        
+
         const remaining = el.scrollHeight - el.scrollTop - el.clientHeight;
         setCanScrollMore(hasDomOverflow && remaining > 15);
     };
@@ -260,12 +256,12 @@ const displayedOptions = useMemo(() => {
         () => getTranslationsByCountryId(rawCountryId),
         [rawCountryId]
     );
- 
+
     const createTimeout = (ms) =>
         new Promise((_, reject) =>
             setTimeout(() => reject(new Error("Fingerprint request timed out")), ms)
         );
- 
+
     useEffect(() => {
         if (allDemos?.isDemoEnabled && allDemos?.isSmartRespFilterEnabled === 1) {
             setIsGameActive(true);
@@ -275,7 +271,7 @@ const displayedOptions = useMemo(() => {
         }
     }, [allDemos]);
 
-    
+
     useEffect(() => {
         setUserAnswer({});
         setErrors({});
@@ -293,19 +289,19 @@ const displayedOptions = useMemo(() => {
         console.log('Survey Results:', results);
         setSurveyResults(results);
         setSurveyDone(true);
-        dispatch(logAttentionCheckResponse({...results,PID:allDemos.PID,CookieId:allDemos.cookieId}))  
+        dispatch(logAttentionCheckResponse({ ...results, PID: allDemos.PID, CookieId: allDemos.cookieId }))
     };
- 
+
     const setAnswerForQ = (qid, value) => {
         setUserAnswer(prev => ({ ...prev, [qid]: value }));
         if (errors[qid]) {
             setErrors(prev => ({ ...prev, [qid]: false }));
         }
     };
- 
+
     const handleNext = () => {
         let newErrors = {};
-        
+
         const val = userAnswer[q.QId];
         let hasError = false;
 
@@ -362,7 +358,7 @@ const displayedOptions = useMemo(() => {
         let firstErrorQId = null;
         const userResponse = [{
             bodyData: [],
-            behiviouralData:{}
+            behiviouralData: {}
         }]
         allDemos.allDemos.forEach(q => {
             const val = userAnswer[q.QId];
@@ -392,7 +388,7 @@ const displayedOptions = useMemo(() => {
                 }
             }
         });
- 
+
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             setSubmissionAlert(true);
@@ -406,14 +402,14 @@ const displayedOptions = useMemo(() => {
             }
             return;
         }
- 
+
         setErrors({});
         setIsSubmitting(true);
- 
+
         try {
             const allQuestions = allDemos.allDemos;
             let results = [];
- 
+
             for (let i = 0; i < allQuestions.length; i++) {
                 const currentQuestionData = allQuestions[i];
                 let userGivenAnswer = userAnswer[currentQuestionData.QId];
@@ -424,13 +420,13 @@ const displayedOptions = useMemo(() => {
                     let opt = currentQuestionData.QuestionAnswerCodes.find(x => String(x.OId) == String(userGivenAnswer));
                     if (opt) userAnserText.push(opt.optionText);
                     userGivenAnswer = [userGivenAnswer];
- 
+
                 } else if ((currentQuestionData.queryType == "radio") || (currentQuestionData.queryType == 2)) {
                     isCorrect = currentQuestionData.correctAnswerCode.includes(+userGivenAnswer);
                     let opt = currentQuestionData.QuestionAnswerCodes.find(x => String(x.OId) == String(userGivenAnswer));
                     if (opt) userAnserText.push(opt.optionText);
                     userGivenAnswer = [userGivenAnswer];
- 
+
                 } else if ((currentQuestionData.queryType == "multiselect") || (currentQuestionData.queryType == 4)) {
                     if (typeof userGivenAnswer == 'string') {
                         userGivenAnswer = userGivenAnswer.split(",").map(Number);
@@ -442,12 +438,12 @@ const displayedOptions = useMemo(() => {
                         let opt = currentQuestionData.QuestionAnswerCodes.find(x => String(x.OId) == String(key));
                         if (opt) userAnserText.push(opt.optionText);
                     }
- 
+
                 } else if ((currentQuestionData.queryType == "range") || (currentQuestionData.queryType == 5)) {
                     isCorrect = currentQuestionData.correctAnswerCode.includes(+userGivenAnswer);
                     userAnserText.push(userGivenAnswer);
                     userGivenAnswer = [userGivenAnswer];
- 
+
                 } else if ((currentQuestionData.queryType == "text") || (currentQuestionData.queryType == 3)) {
                     if (currentQuestionData?.IsZipValidate == 1 && currentQuestionData.QId != 669) {
                         if (currentQuestionData.correctAnswerCode.length) {
@@ -461,10 +457,10 @@ const displayedOptions = useMemo(() => {
                     userAnserText.push(userGivenAnswer);
                     userGivenAnswer = [userGivenAnswer];
                 }
- 
-                results.push({ userGivenAnswer, userAnserText, isCorrect});
+
+                results.push({ userGivenAnswer, userAnserText, isCorrect });
             }
- 
+
             const botSignals = getBotSignals();
             for (let i = 0; i < allQuestions.length; i++) {
                 const currentQuestionData = allQuestions[i];
@@ -481,7 +477,7 @@ const displayedOptions = useMemo(() => {
                     botSignals
                 })
             }
-  
+
             let behiviouralData = null;
             localStorage.removeItem('ipranker_cache');
             let timeTakenInAnalysis = new Date().getTime();
@@ -499,7 +495,7 @@ const displayedOptions = useMemo(() => {
                 if (ipRankerResult.success) behiviouralData = ipRankerResult.payload;
             }
             timeTakenInAnalysis = new Date().getTime() - timeTakenInAnalysis;
-             userResponse[0].behiviouralData={
+            userResponse[0].behiviouralData = {
                 behiviouralData,
                 timeTakenInAnalysis,
                 iprankerResponse: ipRankerResult.success,
@@ -509,15 +505,15 @@ const displayedOptions = useMemo(() => {
             userResponse[0].surveyData = surveyResults;
 
             dispatch(checkUserQuotaAction(userResponse));
- 
+
             setIsSubmitting(false);
- 
+
         } catch (error) {
             console.error("Submission Error", error);
             setIsSubmitting(false);
         }
     };
- 
+
     if (isGameActive) {
         return (
             <Box>
@@ -529,22 +525,22 @@ const displayedOptions = useMemo(() => {
     if (allDemos?.isDemoEnabled && allDemos?.IsAttentionCheckEnabled == 1 && !surveyDone) {
         return <SurveyQuestions onComplete={handleSurveyComplete} />;
     }
-  
-    
+
+
     if (!q) return null;
 
-    
-    
+
+
 
     const val = userAnswer[q.QId] || "";
     const error = errors[q.QId];
     let optionsUI = "";
     if (q.queryType == 1 || q.queryType == "dropdown") {
-        optionsUI = <ControlledDropdown q={q} value={val} setVal={(v) => setAnswerForQ(q.QId, v)}  searchQuery={searchQuery} />;
+        optionsUI = <ControlledDropdown q={q} value={val} setVal={(v) => setAnswerForQ(q.QId, v)} searchQuery={searchQuery} />;
     } else if (q.queryType == 2 || q.queryType == "radio") {
         optionsUI = getNewModeRadioOptions(q, val, (v) => setAnswerForQ(q.QId, v));
     } else if (q.queryType == 4 || q.queryType == "multiselect") {
-        optionsUI = <GetMultiSelectDropDown q={q} value={val} setVal={(v) => setAnswerForQ(q.QId, v)}  searchQuery={searchQuery} />;
+        optionsUI = <GetMultiSelectDropDown q={q} value={val} setVal={(v) => setAnswerForQ(q.QId, v)} searchQuery={searchQuery} />;
     } else {
         const showTextFieldError = (q.queryType == "range" || q.queryType == 5) && error && error != "This question is required";
         optionsUI = getNewModeInputTextElement(q, val, (v) => { setUserAnswer(prev => ({ ...prev, [q.QId]: v })); onInputChange(q.QId, v); }, showTextFieldError ? error : null, setErrors, () => setIsCopied(prev => ({ ...prev, [q.QId]: 1 })), onKeystroke, translations?.errors, translations?.placeholder?.enterAnswer);
@@ -565,7 +561,7 @@ const displayedOptions = useMemo(() => {
                 <div className={`absolute -bottom-32 left-1/3 w-96 h-96 rounded-full ${themeClasses.ambientOrb3}`} />
             </div>
 
-            <ProgressBar 
+            <ProgressBar
                 currentQuestionIndex={currentQuestionIndex}
                 totalQuestions={allDemos.allDemos.length}
                 progressPercent={progressPercent}
@@ -630,11 +626,11 @@ const displayedOptions = useMemo(() => {
                     className="attapoll-scroll w-full h-full overflow-y-auto overscroll-contain px-4 sm:px-6 py-2 flex flex-col items-center relative"
                 >
                     <div className={`w-full max-w-xl flex flex-col pb-6 pt-1 transition-all duration-200 ${!isSearchEnabledForQuestion && !searchQuery.trim() ? 'my-auto' : ''}`}>
-                        
+
                         {optionsUI}
                     </div>
 
-                    
+
 
                     {canScrollMore && displayedOptions.length > 0 && (
                         <div className="sticky bottom-2 z-20 flex justify-center pointer-events-none mt-auto pb-1 animate-bounce">
@@ -654,24 +650,24 @@ const displayedOptions = useMemo(() => {
             <div className={`flex-shrink-0 sticky bottom-0 z-30 w-full pt-2.5 pb-4 px-4 sm:px-6 ${themeClasses.surfaceBlur}`}>
                 <div className="w-full max-w-xl mx-auto space-y-2.5">
                     {isSearchEnabledForQuestion && (
-<SearchBox searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+                        <SearchBox searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
                     )}
                     <Button
-                            onClick={handleNext}
-                            isLoading={isSubmitting}
-                            icon={ArrowRight}
-                        >
-                            {currentQuestionIndex < allDemos.allDemos.length - 1 ? "Next" : "Complete Screening"}
-                        </Button>
+                        onClick={handleNext}
+                        isLoading={isSubmitting}
+                        icon={ArrowRight}
+                    >
+                        {currentQuestionIndex < allDemos.allDemos.length - 1 ? "Next" : "Complete Screening"}
+                    </Button>
                     {/* Honeypot */}
                     <input {...honeypotProps} style={{ display: 'none' }} />
                 </div>
             </div>
-            
-            <Snackbar 
-                open={submissionAlert} 
-                autoHideDuration={3000} 
-                onClose={() => setSubmissionAlert(false)} 
+
+            <Snackbar
+                open={submissionAlert}
+                autoHideDuration={3000}
+                onClose={() => setSubmissionAlert(false)}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
                 <MuiAlert severity="error" onClose={() => setSubmissionAlert(false)}>

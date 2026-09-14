@@ -7,6 +7,7 @@ import { startSpinner, endSpinner } from "../../store/slices/loaderSlice";
 import { requestData } from "../../utils/requestData";
 import { updateParticipantFromClientAction } from "../../store/slices/participantSlice";
 import "../../styles/animations.css";
+import { themeClasses } from "../../theme/themeConfig";
 
 const QuotaFailPage = () => {
     const dispatch = useDispatch();
@@ -167,7 +168,7 @@ const QuotaFailPage = () => {
                 </div>
 
                 {/* QUOTA LIMIT PILL BADGE */}
-                <div className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border text-[10px] sm:text-xs md:text-sm font-semibold shadow-sm mb-4 sm:mb-6 transition-all duration-500 ${isLocked ? 'bg-amber-50/90 border-amber-200/90 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
+                <div className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border text-[10px] sm:text-xs md:text-sm font-semibold shadow-sm mb-4 sm:mb-6 transition-all duration-500 ${isLocked ? 'bg-amber-50/90 border-amber-200/90 text-amber-900' : `${themeClasses.mainBackground} border-slate-200 text-slate-500`}`}>
                     <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${isLocked ? 'bg-amber-500' : 'bg-slate-400'}`}></span>
                     <span className="relative font-medium tracking-tight">
                         {isLocked ? MESSAGES.QUOTA_FAIL.PILL_LOCKED : MESSAGES.QUOTA_FAIL.PILL_VERIFYING}
