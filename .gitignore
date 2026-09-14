@@ -5,3 +5,5 @@ package-lock.json
 # Backup files
 *.bak
 *.bak.js
+
+/build

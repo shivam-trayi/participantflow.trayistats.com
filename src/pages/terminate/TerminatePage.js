@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getUrlParam } from "../../utils/urlUtils";
 import { useDispatch, useSelector } from 'react-redux';
 import { setMessage } from "../../store/slices/alertSlice";
@@ -40,7 +40,7 @@ const TerminatePage = () => {
 
             // Start spinner
             dispatch(startSpinner());
-            
+
             // userStatus 3 = Terminate
             dispatch(updateParticipantFromClientAction(allQueryParams, landingURL, 3))
                 .then((result) => {
@@ -78,7 +78,7 @@ const TerminatePage = () => {
 
     return (
         <div className="h-screen w-full text-slate-800 overflow-x-hidden flex flex-col justify-center items-center relative p-4 select-none mesh-canvas" style={{ fontFamily: '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif' }}>
-            
+
 
             <div className="fixed inset-0 technical-grid pointer-events-none opacity-90"></div>
 
@@ -86,7 +86,7 @@ const TerminatePage = () => {
             <div className="fixed bottom-1/4 -right-20 w-96 h-96 rounded-full bg-orange-300/15 blur-3xl pointer-events-none animate-wave-float" style={{ animationDelay: '-3.5s' }}></div>
 
             <main className="w-full max-w-[620px] z-10 text-center flex flex-col items-center px-4 py-8">
-                
+
                 <div className="relative mb-5 sm:mb-6 flex items-center justify-center">
                     <div className="absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-rose-500/10 animate-pulse-glow pointer-events-none"></div>
                     <div className="absolute w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-rose-300/30 pointer-events-none"></div>
@@ -94,7 +94,7 @@ const TerminatePage = () => {
                     <div className="absolute w-[86px] h-[86px] sm:w-[96px] sm:h-[96px] rounded-full border border-dashed border-rose-400/30 animate-radar pointer-events-none"></div>
 
                     <div className="relative w-20 h-20 sm:w-[86px] sm:h-[86px] rounded-full bg-gradient-to-b from-white via-rose-50/50 to-orange-50/40 p-1 shadow-lg shadow-rose-500/10 flex items-center justify-center border border-rose-200/80 backdrop-blur-sm">
-                        
+
                         {loading ? (
                             <div className="w-12 h-12 rounded-full border-4 border-rose-200 border-t-[#E13B56] animate-spin relative z-10"></div>
                         ) : (

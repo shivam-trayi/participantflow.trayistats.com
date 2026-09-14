@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getUrlParam } from "../../utils/urlUtils";
 import { useSelector, useDispatch } from 'react-redux';
 import { setMessage } from "../../store/slices/alertSlice";
@@ -13,7 +13,7 @@ const QuotaFailPage = () => {
     const loading = useSelector((state) => state.spinner?.loading || false);
 
     let [updateParticipantFromClient, setUpdateParticipantFromClient] = useState(false);
-    
+
     let allRequestData = requestData(window);
 
     let c1Search = getUrlParam('rid', 'Empty');
@@ -32,7 +32,7 @@ const QuotaFailPage = () => {
             let allQueryParams = allRequestData.urlQueryString;
             let landingURL = allRequestData.landingURL;
             setUpdateParticipantFromClient(true);
-            
+
             dispatch(startSpinner());
 
             dispatch(updateParticipantFromClientAction(allQueryParams, landingURL, 2))
@@ -71,12 +71,12 @@ const QuotaFailPage = () => {
 
     return (
         <div className="relative flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 text-slate-800 antialiased selection:bg-amber-100 selection:text-amber-900" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', background: 'radial-gradient(circle at 50% 30%, #fffbf2 0%, #fefcf9 45%, #f8fafc 100%)', overflowX: 'hidden' }}>
-            
+
             <main className="relative z-10 w-full max-w-xl mx-auto flex flex-col items-center text-center">
 
                 {/* CIRCULAR QUOTA INDICATOR */}
                 <div className="relative flex items-center justify-center mb-8">
-                    
+
                     {/* Concentric Halo Rings */}
                     <div className="qf-hero-halo qf-halo-outer"></div>
                     <div className="qf-hero-halo qf-halo-mid"></div>
@@ -84,22 +84,22 @@ const QuotaFailPage = () => {
 
                     {/* Outer 3D White Raised Disc */}
                     <div className={`relative z-10 w-56 h-56 sm:w-64 sm:h-64 rounded-full bg-white/95 border border-amber-100/90 flex items-center justify-center transition-all duration-700 ${isLocked ? 'qf-pulse-glow' : ''}`}>
-                        
+
                         {/* SVG Dual Stroke Circular Ring */}
                         <svg className="w-48 h-48 sm:w-56 sm:h-56 transform -rotate-90" viewBox="0 0 200 200">
                             {/* Background track */}
                             <circle cx="100" cy="100" r="82" stroke="#fef3c7" strokeWidth="12" fill="none" opacity="0.6" />
-                            
+
                             {/* Animated Progress Stroke */}
-                            <circle 
-                                cx="100" cy="100" r="82" 
-                                stroke="url(#amberGradient)" 
-                                strokeWidth="12.5" 
-                                strokeLinecap="round" 
-                                fill="none" 
-                                strokeDasharray={CIRCUMFERENCE} 
+                            <circle
+                                cx="100" cy="100" r="82"
+                                stroke="url(#amberGradient)"
+                                strokeWidth="12.5"
+                                strokeLinecap="round"
+                                fill="none"
+                                strokeDasharray={CIRCUMFERENCE}
                                 strokeDashoffset={strokeOffset}
-                                className="transition-[stroke-dashoffset] duration-150 ease-out" 
+                                className="transition-[stroke-dashoffset] duration-150 ease-out"
                             />
 
                             {/* Inner Dotted Accent Track */}
@@ -117,7 +117,7 @@ const QuotaFailPage = () => {
 
                         {/* Inner Circular Core Content */}
                         <div className="absolute inset-0 m-auto w-40 h-40 sm:w-44 sm:h-44 rounded-full flex flex-col items-center justify-center p-3">
-                            
+
                             {/* Padlock Squircle Badge */}
                             <div className={`mb-1 w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/35 transition-all ${isLocked ? 'qf-lock-pop' : 'scale-90 opacity-80'}`}>
                                 {loading ? (
@@ -153,12 +153,12 @@ const QuotaFailPage = () => {
                         <span className="text-slate-500">{isLocked ? 'Quota Closed' : 'Quota Filling'}</span>
                         <span className="text-amber-700 font-semibold tracking-wide">Capacity Limit</span>
                     </div>
-                    
+
                     {/* 10 Responsive Dashes */}
                     <div className="grid grid-cols-10 gap-1.5 sm:gap-2 h-2.5 w-full items-center">
                         {[...Array(10)].map((_, idx) => (
-                            <div 
-                                key={idx} 
+                            <div
+                                key={idx}
                                 className={`qf-dash-segment h-full rounded-full ${idx < activeCount ? 'active' : 'bg-slate-200'}`}
                             ></div>
                         ))}

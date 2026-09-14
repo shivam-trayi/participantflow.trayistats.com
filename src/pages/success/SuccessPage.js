@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getUrlParam } from "../../utils/urlUtils";
 import { useDispatch, useSelector } from 'react-redux';
 import { setMessage } from "../../store/slices/alertSlice";
@@ -162,7 +162,7 @@ const SuccessPage = () => {
         function render(time) {
             ctx.clearRect(0, 0, width, height);
             const t = time * 0.001 || 0;
-            
+
             for (let j = 0; j < ambientStardust.length; j++) {
                 const dust = ambientStardust[j];
                 dust.y -= dust.speedY;
@@ -288,7 +288,7 @@ const SuccessPage = () => {
 
     return (
         <div className="h-screen w-full font-sans antialiased text-slate-800 bg-[#f8faff] transition-colors duration-500 select-none overflow-x-hidden cursor-default" style={{ fontFamily: '"Plus Jakarta Sans", Inter, system-ui, sans-serif' }}>
-            
+
 
             <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
                 <div className="absolute -top-40 -left-40 w-[42rem] h-[42rem] sm:w-[58rem] sm:h-[58rem] rounded-full bg-gradient-to-br from-indigo-300/45 via-purple-200/30 to-transparent blur-3xl transition-all duration-700"></div>

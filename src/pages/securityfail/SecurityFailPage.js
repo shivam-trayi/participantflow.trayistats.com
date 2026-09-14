@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getUrlParam } from "../../utils/urlUtils";
 import { useSelector, useDispatch } from 'react-redux';
 import { setMessage } from "../../store/slices/alertSlice";
@@ -31,7 +31,7 @@ const SecurityFailPage = () => {
             let allQueryParams = allRequestData.urlQueryString;
             let landingURL = allRequestData.landingURL;
             setUpdateParticipantFromClient(true);
-            
+
             dispatch(startSpinner());
 
             dispatch(updateParticipantFromClientAction(allQueryParams, landingURL, 10))
@@ -63,15 +63,15 @@ const SecurityFailPage = () => {
 
     return (
         <div className="bg-red-50/30 text-slate-800 min-h-screen flex items-center justify-center antialiased selection:bg-red-100 selection:text-red-700 sf-cyber-grid relative overflow-hidden px-4 py-8" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            
+
             {/* Atmospheric ambient light caustic (Always Red) */}
             <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] rounded-full blur-[130px] pointer-events-none -z-10 bg-red-100/70"></div>
 
             <main className="w-full max-w-lg mx-auto text-center flex flex-col items-center relative z-10">
-                
+
                 {/* Main Security HUD Visual Indicator */}
                 <div className="relative mb-14 flex items-center justify-center select-none">
-                    
+
                     {/* Shockwave expansion ripple on failure */}
                     <div className="absolute w-40 h-40 rounded-full border border-red-500/80 pointer-events-none sf-failure-shockwave"></div>
 
@@ -88,18 +88,18 @@ const SecurityFailPage = () => {
 
                     {/* Main Shield Base Platform */}
                     <div className="relative w-32 h-32 rounded-3xl backdrop-blur-xl flex items-center justify-center bg-red-50/90 border border-red-400 shadow-[0_16px_40px_-12px_rgba(220,38,38,0.22)] sf-shake-active z-10">
-                        
+
                         {loading ? (
                             <div className="w-14 h-14 rounded-full border-4 border-red-200 border-t-red-600 animate-spin relative z-10"></div>
                         ) : (
                             <svg className="w-16 h-16 relative z-10 text-red-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 {/* Shield outline */}
-                                <path d="M12 2L4 5.5V11.5C4 16.5 7.4 21.1 12 22.5C16.6 21.1 20 16.5 20 11.5V5.5L12 2Z" 
-                                      stroke="currentColor" 
-                                      strokeWidth="1.8" 
-                                      strokeLinecap="round" 
-                                      strokeLinejoin="round"/>
-                                
+                                <path d="M12 2L4 5.5V11.5C4 16.5 7.4 21.1 12 22.5C16.6 21.1 20 16.5 20 11.5V5.5L12 2Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.8"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round" />
+
                                 {/* Verification Failed Red Cross */}
                                 <g>
                                     <path className="sf-cross-line stroke-red-600 sf-drawn" d="M8.5 8.5L15.5 15.5" strokeWidth="2.5" strokeLinecap="round" />
