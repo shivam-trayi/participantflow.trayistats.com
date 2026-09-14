@@ -165,34 +165,34 @@ const QuotaFailPage = () => {
                 </div>
 
                 {/* QUOTA LIMIT PILL BADGE */}
-                <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs sm:text-sm font-semibold shadow-sm mb-6 transition-all duration-500 ${isLocked ? 'bg-amber-50/90 border-amber-200/90 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
-                    <span className={`w-2 h-2 rounded-full ${isLocked ? 'bg-amber-500' : 'bg-slate-400'}`}></span>
+                <div className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border text-[10px] sm:text-xs md:text-sm font-semibold shadow-sm mb-4 sm:mb-6 transition-all duration-500 ${isLocked ? 'bg-amber-50/90 border-amber-200/90 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
+                    <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${isLocked ? 'bg-amber-500' : 'bg-slate-400'}`}></span>
                     <span className="relative font-medium tracking-tight">
                         {isLocked ? 'Quota Limit Reached \u2022 Capacity 100%' : 'Verifying Capacity...'}
                     </span>
                 </div>
 
                 {/* PRIMARY HEADINGS */}
-                <div className="space-y-2 mb-4 px-4">
-                    <h1 className="text-3xl sm:text-4xl md:text-[42px] font-extrabold text-[#0f172a] tracking-tight leading-tight">
+                <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4 px-2 sm:px-4">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-[#0f172a] tracking-tight leading-tight">
                         Quota Filled
                     </h1>
-                    <p className="text-lg sm:text-xl font-semibold text-slate-700 tracking-normal">
+                    <p className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-slate-700 tracking-normal">
                         Thank you for your interest
                     </p>
                 </div>
 
                 {/* EXPLANATORY PARAGRAPH */}
-                <p className="text-slate-600 text-base sm:text-lg max-w-lg leading-relaxed mb-8 px-4 font-normal">
+                <p className="text-slate-600 text-xs sm:text-sm md:text-base lg:text-lg max-w-sm sm:max-w-md lg:max-w-lg leading-relaxed mb-6 sm:mb-8 px-4 font-normal">
                     Unfortunately, the quota for this survey has been filled. You are unable to continue with this survey.
                 </p>
 
                 {/* WARNING BOX */}
-                <div className="w-full max-w-md bg-amber-50/80 border border-amber-200/90 rounded-2xl py-3.5 px-5 shadow-sm flex items-center justify-center gap-3">
-                    <svg className="w-5 h-5 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <div className="w-[90%] sm:w-full max-w-sm sm:max-w-md bg-amber-50/80 border border-amber-200/90 rounded-xl sm:rounded-2xl py-2.5 sm:py-3.5 px-3 sm:px-5 shadow-sm flex items-center justify-center gap-2 sm:gap-3 mx-auto">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-sm sm:text-base font-semibold text-amber-950">
+                    <span className="text-xs sm:text-sm md:text-base font-semibold text-amber-950 text-center leading-tight">
                         Please do not refresh or close window
                     </span>
                 </div>
