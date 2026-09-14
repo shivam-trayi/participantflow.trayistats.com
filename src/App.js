@@ -26,9 +26,7 @@ const GlobalLoader = () => {
 }
 
 function App() {
-  useEffect(() => {
-    applyTheme();
-  });
+  useEffect(() => { applyTheme(); }, []);
   
   const alertMessage = useSelector(state => state.alert);
 

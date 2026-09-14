@@ -1,10 +1,10 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMessage } from '../../store/slices/alertSlice';
 import { requestData } from '../../utils/requestData';
 import { createParticipantAction, fetchWelcomeMessageAction } from '../../store/slices/participantSlice';
 import { startSpinner } from '../../store/slices/loaderSlice';
-import DemographicsIsSinglePageScreening from '../../features/screening/demographicsIsSinglePageScreening';
+const DemographicsIsSinglePageScreening = React.lazy(() => import('../../features/screening/demographicsIsSinglePageScreening'));
 import * as rdd from 'react-device-detect';
 //import { getFingerprint } from 'fingerprintjs-pro';
 import { useUserActivityTracker } from '../../hooks/useUserActivity';
@@ -145,8 +145,10 @@ const Home = () => {
             if (!createParticipantApiCalled && !allRequestData.badUrlHitting && activityData && welcomeMessageSuccess && isVisible === 0) {
                 // call action of API
                 dispatch(startSpinner());
-                let visitorId = await fetchFingerprint();
-                const cpuArch = await getCpuArchitecture();
+                const [visitorId, cpuArch] = await Promise.all([
+                    fetchFingerprint(),
+                    getCpuArchitecture()
+                ]);
                 const browserLogData = await getBrowserLogData(cpuArch);
                 const browserParams = new URLSearchParams(browserLogData).toString();
                 let allQueryParams = allRequestData.urlQueryString;
@@ -175,7 +177,7 @@ const Home = () => {
         let demos = "";
         if (demographicsData) {
             
-                demos = <DemographicsIsSinglePageScreening />
+                demos = <Suspense fallback={<div className="flex justify-center p-12 text-slate-500 font-medium tracking-wide"><div className="w-8 h-8 rounded-full border-4 border-slate-200 border-t-indigo-500 animate-spin"></div></div>}><DemographicsIsSinglePageScreening /></Suspense>
             setContent(demos)
         }
     }, [demographicsData, setShowSurvey])

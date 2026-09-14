@@ -11,7 +11,7 @@ import { themeClasses } from "../../theme/themeConfig";
 
 const SecurityFailPage = () => {
     const dispatch = useDispatch();
-    const alertMessage = useSelector(state => state.alert?.alertMessage || "");
+    const alertMessage = useSelector(state => state.alert?.message || "");
     const loading = useSelector((state) => state.spinner?.loading || false);
 
     let [updateParticipantFromClient, setUpdateParticipantFromClient] = useState(false);
