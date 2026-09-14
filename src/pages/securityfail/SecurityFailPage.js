@@ -9,6 +9,7 @@ import "../../styles/animations.css";
 const SecurityFailPage = () => {
     const dispatch = useDispatch();
     const alertMessage = useSelector(state => state.alert?.alertMessage || "");
+    const loading = useSelector((state) => state.spinner?.loading || false);
 
     let [updateParticipantFromClient, setUpdateParticipantFromClient] = useState(false);
     let allRequestData = requestData(window);
@@ -87,29 +88,34 @@ const SecurityFailPage = () => {
                     {/* Main Shield Base Platform */}
                     <div className="relative w-28 h-28 rounded-3xl backdrop-blur-xl flex items-center justify-center bg-red-50/80 border border-red-400 shadow-[0_16px_40px_-12px_rgba(220,38,38,0.22)] sf-shake-active">
                         
-                        {/* Interactive SVG Security Shield */}
-                        <svg className="w-14 h-14 relative z-10 text-red-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            {/* Shield outline */}
-                            <path d="M12 2L4 5.5V11.5C4 16.5 7.4 21.1 12 22.5C16.6 21.1 20 16.5 20 11.5V5.5L12 2Z" 
-                                  stroke="currentColor" 
-                                  strokeWidth="1.8" 
-                                  strokeLinecap="round" 
-                                  strokeLinejoin="round"/>
-                            
-                            {/* Verification Failed Red Cross */}
-                            <g>
-                                <path className="sf-cross-line stroke-red-600 sf-drawn" d="M8.5 8.5L15.5 15.5" strokeWidth="2.5" strokeLinecap="round" />
-                                <path className="sf-cross-line stroke-red-600 sf-drawn" d="M15.5 8.5L8.5 15.5" strokeWidth="2.5" strokeLinecap="round" />
-                            </g>
-                        </svg>
+                        {loading ? (
+                            <div className="w-12 h-12 rounded-full border-4 border-red-200 border-t-red-600 animate-spin relative z-10"></div>
+                        ) : (
+                            <svg className="w-14 h-14 relative z-10 text-red-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                {/* Shield outline */}
+                                <path d="M12 2L4 5.5V11.5C4 16.5 7.4 21.1 12 22.5C16.6 21.1 20 16.5 20 11.5V5.5L12 2Z" 
+                                      stroke="currentColor" 
+                                      strokeWidth="1.8" 
+                                      strokeLinecap="round" 
+                                      strokeLinejoin="round"/>
+                                
+                                {/* Verification Failed Red Cross */}
+                                <g>
+                                    <path className="sf-cross-line stroke-red-600 sf-drawn" d="M8.5 8.5L15.5 15.5" strokeWidth="2.5" strokeLinecap="round" />
+                                    <path className="sf-cross-line stroke-red-600 sf-drawn" d="M15.5 8.5L8.5 15.5" strokeWidth="2.5" strokeLinecap="round" />
+                                </g>
+                            </svg>
+                        )}
 
                         {/* Padlock Seal Badge */}
-                        <div className="absolute -bottom-2 -right-2 bg-gradient-to-tr from-red-600 to-red-500 text-white p-2 rounded-2xl shadow-lg shadow-red-600/30 flex items-center justify-center border-2 border-white scale-100 opacity-100">
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                                <rect x="3" y="11" width="18" height="11" rx="2.5" ry="2.5"></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                            </svg>
-                        </div>
+                        {!loading && (
+                            <div className="absolute -bottom-2 -right-2 bg-gradient-to-tr from-red-600 to-red-500 text-white p-2 rounded-2xl shadow-lg shadow-red-600/30 flex items-center justify-center border-2 border-white scale-100 opacity-100">
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2.5" ry="2.5"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                        )}
                     </div>
                 </div>
 
