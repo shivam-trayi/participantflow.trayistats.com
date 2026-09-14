@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { getUrlParam } from "../../utils/urlUtils";
 import { useDispatch, useSelector } from 'react-redux';
 import { setMessage } from "../../store/slices/alertSlice";
 import { startSpinner, endSpinner } from "../../store/slices/loaderSlice";
@@ -366,21 +367,6 @@ const SuccessPage = () => {
     )
 }
 
-function getUrlParam(parameter, defaultvalue) {
-    var urlparameter = defaultvalue;
-    if (window.location.href.indexOf(parameter) > -1) {
-        var parsed = getUrlVars()[parameter];
-        urlparameter = parsed !== undefined ? parsed : defaultvalue;
-    }
-    return urlparameter || defaultvalue;
-}
 
-function getUrlVars() {
-    var vars = {};
-    window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
-        vars[key] = value;
-    });
-    return vars;
-}
 
 export default SuccessPage;
