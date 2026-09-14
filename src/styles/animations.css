@@ -159,3 +159,105 @@
     0%, 100% { transform: translate(-50%, -50%) translateY(0); }
     50% { transform: translate(-50%, -50%) translateY(-8px); }
 }
+
+/* =========================================
+   QUOTA FAIL PAGE ANIMATIONS
+========================================= */
+
+.qf-mesh-canvas {
+    background-color: #F8FAFF;
+    background-image:
+        radial-gradient(circle at 18% 18%, rgba(196, 213, 255, 0.55) 0%, transparent 45%),
+        radial-gradient(circle at 82% 22%, rgba(200, 230, 255, 0.45) 0%, transparent 42%),
+        radial-gradient(circle at 50% 60%, rgba(224, 235, 255, 0.85) 0%, transparent 60%),
+        radial-gradient(circle at 80% 85%, rgba(210, 225, 255, 0.5) 0%, transparent 50%),
+        radial-gradient(circle at 15% 85%, rgba(230, 240, 255, 0.5) 0%, transparent 45%);
+}
+
+.qf-technical-grid {
+    background-size: 32px 32px;
+    background-image:
+        linear-gradient(to right, rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+}
+
+.qf-circle-track {
+    stroke-dasharray: 283;
+    transform-origin: 50% 50%;
+}
+
+.qf-mark-lines {
+    stroke-dasharray: 40;
+}
+
+@keyframes qfDrawCircle {
+    0% { stroke-dashoffset: 283; transform: rotate(-90deg) scale(0.92); }
+    100% { stroke-dashoffset: 0; transform: rotate(-90deg) scale(1); }
+}
+
+@keyframes qfDrawMark {
+    0% { stroke-dashoffset: 40; opacity: 0; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes qfRadar {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes qfPulseGlow {
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.12); }
+}
+
+@keyframes qfWaveFloat {
+    0% { transform: translateY(0px) rotate(0deg); }
+    100% { transform: translateY(-12px) rotate(2deg); }
+}
+
+@keyframes qfSyncShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(250%); }
+}
+
+.qf-animate-draw-circle { animation: qfDrawCircle 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.qf-animate-draw-mark   { animation: qfDrawMark 0.8s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.qf-animate-radar       { animation: qfRadar 12s linear infinite; }
+.qf-animate-pulse-glow  { animation: qfPulseGlow 3.5s ease-in-out infinite; }
+.qf-animate-wave-float  { animation: qfWaveFloat 7s ease-in-out infinite alternate; }
+.qf-animate-shimmer     { animation: qfSyncShimmer 2.2s ease-in-out infinite; }
+
+
+/* =========================================
+   QUOTA FAIL PAGE - RING & TRANSITIONS
+========================================= */
+
+.qf-page-bg {
+    background-color: #f8fafc;
+}
+
+.qf-ambient-glow {
+    background: radial-gradient(circle at 50% 36%, rgba(245, 158, 11, 0.08) 0%, rgba(241, 245, 249, 0) 72%);
+}
+
+.qf-fade-slide {
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes qfRadarWave {
+    0%   { transform: scale(0.85); opacity: 0.85; }
+    100% { transform: scale(1.35); opacity: 0; }
+}
+
+@keyframes qfBadgePop {
+    0%   { transform: scale(0.8) translateY(6px); opacity: 0; }
+    100% { transform: scale(1) translateY(0);     opacity: 1; }
+}
+
+.qf-radar-pulse {
+    animation: qfRadarWave 2.4s ease-out infinite;
+}
+
+.qf-badge-pop {
+    animation: qfBadgePop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

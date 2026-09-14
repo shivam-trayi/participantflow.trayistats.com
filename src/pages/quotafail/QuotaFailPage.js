@@ -6,12 +6,27 @@ import { requestData } from "../../utils/requestData";
 import { updateParticipantFromClientAction } from "../../store/slices/participantSlice";
 import "../../styles/animations.css";
 
+const TOTAL_CIRCUMFERENCE = 415;
+
 const QuotaFailPage = () => {
     const dispatch = useDispatch();
     const alertMessage = useSelector((state) => state.alert.message);
     const loading = useSelector((state) => state.spinner.loading);
 
+
     let [updateParticipantFromClient, setUpdateParticipantFromClient] = useState(false);
+
+    // Animation states
+    const [percent, setPercent] = useState(82);
+    const [isLocked, setIsLocked] = useState(false);
+    const [showHeading, setShowHeading] = useState(false);
+    const [showSub, setShowSub] = useState(false);
+    const [showText, setShowText] = useState(false);
+    const [showBanner, setShowBanner] = useState(false);
+    const [showSession, setShowSession] = useState(false);
+    const [showRadar, setShowRadar] = useState(false);
+    const [pillText, setPillText] = useState('Evaluating Quota Limits...');
+    const [pillLocked, setPillLocked] = useState(false);
 
     let allRequestData = requestData(window);
 
@@ -51,6 +66,55 @@ const QuotaFailPage = () => {
         }
     }, [updateParticipantFromClient, allRequestData.badUrlHitting, allRequestData.urlQueryString, allRequestData.landingURL, dispatch]);
 
+    // Quota ring animation — starts only after API call is done (loading = false)
+    useEffect(() => {
+        if (loading) return; // wait for API to complete
+
+        const initialPercent = 82;
+        setPercent(initialPercent);
+        setPillText('Quota Slots: 82% filled');
+
+        const timer = setTimeout(() => {
+            setPillText('Allocating final slots...');
+
+            let currentVal = initialPercent;
+            const targetVal = 100;
+            const duration = 1200;
+            const intervalTime = 20;
+            const step = (targetVal - initialPercent) / (duration / intervalTime);
+
+            const fillTimer = setInterval(() => {
+                currentVal += step;
+                if (currentVal >= targetVal) {
+                    currentVal = targetVal;
+                    clearInterval(fillTimer);
+
+                    setPercent(100);
+                    setShowRadar(true);
+                    setPillLocked(true);
+                    setPillText('Target Reached: 100% Full');
+
+                    setTimeout(() => {
+                        setIsLocked(true);
+                        setShowHeading(true);
+                        setTimeout(() => setShowSub(true), 150);
+                        setTimeout(() => setShowText(true), 300);
+                        setTimeout(() => setShowBanner(true), 450);
+                        setTimeout(() => setShowSession(true), 600);
+                    }, 350);
+                } else {
+                    setPercent(Math.floor(currentVal));
+                }
+            }, intervalTime);
+
+            return () => clearInterval(fillTimer);
+        }, 600);
+
+        return () => clearTimeout(timer);
+    }, [loading]); // ← depends on loading, same as Success/Terminate
+
+    const strokeOffset = TOTAL_CIRCUMFERENCE - (percent / 100) * TOTAL_CIRCUMFERENCE;
+
     const isHiddenRoute = (
         c1Search.startsWith("SS") || c2Search.startsWith("SS") ||
         c1Search.startsWith("NBL") ||
@@ -63,176 +127,114 @@ const QuotaFailPage = () => {
     }
 
     return (
-        <div
-            className="h-screen w-full text-slate-800 overflow-x-hidden flex flex-col justify-center items-center relative p-4 select-none"
-            style={{
-                fontFamily: '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif',
-                backgroundColor: '#F8FAFF',
-                backgroundImage: `
-                    radial-gradient(circle at 18% 18%, rgba(196, 213, 255, 0.55) 0%, transparent 45%),
-                    radial-gradient(circle at 82% 22%, rgba(200, 230, 255, 0.45) 0%, transparent 42%),
-                    radial-gradient(circle at 50% 60%, rgba(224, 235, 255, 0.85) 0%, transparent 60%),
-                    radial-gradient(circle at 80% 85%, rgba(210, 225, 255, 0.5) 0%, transparent 50%),
-                    radial-gradient(circle at 15% 85%, rgba(230, 240, 255, 0.5) 0%, transparent 45%)
-                `
-            }}
-        >
-            <style>{`
-                .qf-technical-grid {
-                    background-size: 32px 32px;
-                    background-image:
-                        linear-gradient(to right, rgba(99, 102, 241, 0.04) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
-                }
+        <div className="qf-page-bg text-slate-800 min-h-screen flex flex-col justify-between selection:bg-amber-100 overflow-x-hidden qf-ambient-glow relative" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
 
-                .qf-circle-track {
-                    stroke-dasharray: 283;
-                    transform-origin: 50% 50%;
-                }
+            {/* Ambient orbs */}
+            <div className="pointer-events-none absolute -top-28 left-1/2 -translate-x-1/2 w-[560px] h-[560px] bg-amber-200/25 rounded-full blur-3xl -z-10"></div>
+            <div className="pointer-events-none absolute bottom-0 right-1/4 w-[380px] h-[380px] bg-slate-200/50 rounded-full blur-3xl -z-10"></div>
 
-                .qf-mark-lines {
-                    stroke-dasharray: 40;
-                }
+            <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-16 text-center max-w-2xl mx-auto w-full">
 
-                @keyframes qfDrawCircle {
-                    0% { stroke-dashoffset: 283; transform: rotate(-90deg) scale(0.92); }
-                    100% { stroke-dashoffset: 0; transform: rotate(-90deg) scale(1); }
-                }
+                {/* Quota Ring Hero */}
+                <div className="relative mb-6 flex flex-col items-center justify-center">
 
-                @keyframes qfDrawMark {
-                    0% { stroke-dashoffset: 40; opacity: 0; }
-                    100% { stroke-dashoffset: 0; opacity: 1; }
-                }
+                    {/* Radar Pulse */}
+                    <div className={`absolute w-44 h-44 rounded-full border-2 border-amber-400/40 pointer-events-none transition-opacity duration-500 ${showRadar ? 'qf-radar-pulse' : 'opacity-0'}`}></div>
 
-                @keyframes qfRadar {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
+                    {/* div SVG Ring */}
+                    <div className="relative w-40 h-40 sm:w-44 sm:h-44 flex items-center justify-center">
+                        <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 160 160">
+                            {/* Background track */}
+                            <circle cx="80" cy="80" r="66" stroke="#e2e8f0" strokeWidth="9" fill="transparent" />
+                            {/* Dynamic fill */}
+                            <circle
+                                cx="80" cy="80" r="66"
+                                stroke={percent >= 100 ? '#d97706' : '#f59e0b'}
+                                strokeWidth="9"
+                                strokeLinecap="round"
+                                fill="transparent"
+                                style={{
+                                    strokeDasharray: TOTAL_CIRCUMFERENCE,
+                                    strokeDashoffset: strokeOffset,
+                                    transformOrigin: 'center',
+                                    transition: 'stroke-dashoffset 0.1s linear, stroke 0.4s ease'
+                                }}
+                            />
+                        </svg>
 
-                @keyframes qfPulseGlow {
-                    0%, 100% { opacity: 0.45; transform: scale(1); }
-                    50% { opacity: 0.8; transform: scale(1.12); }
-                }
+                        {/* Center content */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center select-none">
+                            {loading ? (
+                                <div className="w-12 h-12 rounded-full border-4 border-amber-200 border-t-amber-500 animate-spin"></div>
+                            ) : !isLocked ? (
+                                <div className="flex flex-col items-center transition-all duration-300">
+                                    <span className="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                                        {percent}%
+                                    </span>
+                                    <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-amber-600 mt-0.5">
+                                        {percent >= 100 ? 'Capacity Reached' : 'Quota Filling'}
+                                    </span>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center qf-badge-pop">
+                                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-1 shadow-inner">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.3" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-700">100% Limit</span>
+                                </div>
+                            )}
+                        </div>
 
-                @keyframes qfWaveFloat {
-                    0% { transform: translateY(0px) rotate(0deg); }
-                    100% { transform: translateY(-12px) rotate(2deg); }
-                }
+                        {/* Activity ping dot */}
+                        <span className="absolute top-2 right-2 flex h-3.5 w-3.5">
+                            <span className={`absolute inline-flex h-full w-full rounded-full border-2 border-white ${pillLocked ? 'bg-amber-600' : 'bg-amber-500 animate-ping opacity-60'}`}></span>
+                            <span className={`relative inline-flex rounded-full h-3.5 w-3.5 border-2 border-white shadow-sm ${pillLocked ? 'bg-amber-600' : 'bg-amber-500'}`}></span>
+                        </span>
+                    </div>
 
-                @keyframes qfSyncShimmer {
-                    0% { transform: translateX(-100%); }
-                    100% { transform: translateX(250%); }
-                }
-
-                .qf-animate-draw-circle { animation: qfDrawCircle 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-                .qf-animate-draw-mark   { animation: qfDrawMark 0.8s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-                .qf-animate-radar       { animation: qfRadar 12s linear infinite; }
-                .qf-animate-pulse-glow  { animation: qfPulseGlow 3.5s ease-in-out infinite; }
-                .qf-animate-wave-float  { animation: qfWaveFloat 7s ease-in-out infinite alternate; }
-                .qf-animate-shimmer     { animation: qfSyncShimmer 2.2s ease-in-out infinite; }
-            `}</style>
-
-            {/* Background grid */}
-            <div className="fixed inset-0 qf-technical-grid pointer-events-none opacity-90"></div>
-
-            {/* Floating orbs */}
-            <div className="fixed top-1/4 -left-20 w-80 h-80 rounded-full bg-indigo-400/10 blur-3xl pointer-events-none qf-animate-wave-float"></div>
-            <div className="fixed bottom-1/4 -right-20 w-96 h-96 rounded-full bg-blue-300/10 blur-3xl pointer-events-none qf-animate-wave-float" style={{ animationDelay: '-3.5s' }}></div>
-
-            <main className="w-full max-w-[620px] z-10 text-center flex flex-col items-center px-4 py-8">
-
-                {/* Icon area */}
-                <div className="relative mb-5 sm:mb-6 flex items-center justify-center">
-                    <div className="absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-indigo-500/10 qf-animate-pulse-glow pointer-events-none"></div>
-                    <div className="absolute w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-indigo-300/30 pointer-events-none"></div>
-                    <div className="absolute w-[86px] h-[86px] sm:w-[96px] sm:h-[96px] rounded-full border border-dashed border-indigo-400/30 qf-animate-radar pointer-events-none"></div>
-
-                    <div className="relative w-20 h-20 sm:w-[86px] sm:h-[86px] rounded-full bg-gradient-to-b from-white via-indigo-50/50 to-blue-50/40 p-1 shadow-lg shadow-indigo-500/10 flex items-center justify-center border border-indigo-200/80 backdrop-blur-sm">
-
-                        {loading ? (
-                            <div className="w-12 h-12 rounded-full border-4 border-indigo-200 border-t-indigo-500 animate-spin relative z-10"></div>
-                        ) : (
-                            <>
-                                <svg className="w-[52px] h-[52px] sm:w-[60px] sm:h-[60px] text-[#4F46E5]" viewBox="0 0 100 100">
-                                    <defs>
-                                        <linearGradient id="quotaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stopColor="#6366F1" />
-                                            <stop offset="60%" stopColor="#4F46E5" />
-                                            <stop offset="100%" stopColor="#818CF8" />
-                                        </linearGradient>
-                                    </defs>
-
-                                    {/* Track */}
-                                    <circle cx="50" cy="50" r="43" fill="none" stroke="currentColor" strokeOpacity="0.12" strokeWidth="5" />
-
-                                    {/* Drawing circle */}
-                                    <circle
-                                        className="qf-circle-track qf-animate-draw-circle"
-                                        cx="50" cy="50" r="43"
-                                        fill="none"
-                                        stroke="url(#quotaGradient)"
-                                        strokeWidth="5.5"
-                                        strokeLinecap="round"
-                                    />
-
-                                    {/* Quota full icon — hourglass / bar chart style (3 horizontal bars) */}
-                                    <g className="qf-mark-lines qf-animate-draw-mark" stroke="url(#quotaGradient)" strokeWidth="5" strokeLinecap="round">
-                                        <line x1="34" y1="38" x2="66" y2="38" />
-                                        <line x1="34" y1="50" x2="58" y2="50" strokeOpacity="0.75" />
-                                        <line x1="34" y1="62" x2="50" y2="62" strokeOpacity="0.5" />
-                                    </g>
-                                </svg>
-
-                                {/* Pulsing status dot */}
-                                <span className="absolute bottom-0 right-0 flex h-3.5 w-3.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60"></span>
-                                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#4F46E5] border-2 border-white"></span>
-                                </span>
-                            </>
-                        )}
+                    {/* Status Pill */}
+                    <div className={`mt-4 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-medium transition-all duration-300 ${pillLocked ? 'bg-amber-50 border-amber-200 text-slate-800' : 'bg-slate-100/90 border-slate-200 text-slate-600'}`}>
+                        <span className={`w-2 h-2 rounded-full ${pillLocked ? 'bg-amber-600' : 'bg-amber-500 animate-pulse'}`}></span>
+                        <span className={pillLocked ? 'font-semibold' : ''}>{pillText}</span>
                     </div>
                 </div>
 
-                {/* Title */}
-                <h1 className="text-4xl sm:text-5xl md:text-[52px] font-extrabold tracking-tight text-[#4F46E5] mb-2.5 drop-shadow-sm leading-tight">
-                    Survey Full
+                {/* Heading */}
+                <h1 className={`text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight qf-fade-slide ${showHeading ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
+                    Quota Filled
                 </h1>
 
-                {/* Subtitle */}
-                <h2 className="text-base sm:text-lg md:text-xl font-bold text-slate-700 tracking-tight mb-3">
-                    We appreciate your interest
+                {/* Sub Heading */}
+                <h2 className={`mt-3 text-lg sm:text-xl font-medium text-slate-600 max-w-lg mx-auto qf-fade-slide ${showSub ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
+                    Thank you for your interest
                 </h2>
 
-                {/* Message */}
-                <p className="text-xs sm:text-sm md:text-[15px] leading-relaxed text-slate-500 max-w-[480px] mx-auto mb-7 font-normal">
-                    Unfortunately, this survey has reached its maximum number of responses. Thank you for your time and interest.
+                {/* Explanation */}
+                <p className={`mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-lg mx-auto qf-fade-slide ${showText ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
+                    Unfortunately, the quota for this survey has been filled. You are unable to continue with this survey.
                 </p>
 
-                {/* Warning banner */}
-                <div className="relative w-full max-w-sm sm:max-w-md overflow-hidden rounded-2xl bg-amber-100/60 border border-amber-300/70 shadow-sm backdrop-blur-sm">
-                    {/* Shimmer line */}
-                    <div className="relative h-[2px] w-full bg-amber-200/50 overflow-hidden">
-                        <div className="absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-amber-500 to-transparent qf-animate-shimmer"></div>
-                    </div>
-
-                    <div className="px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-center gap-2.5 text-[#C26200]">
-                        <div className="relative shrink-0 flex items-center justify-center">
-                            <svg className="w-4 h-4 text-[#D97706] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                <line x1="12" y1="9" x2="12" y2="13"></line>
-                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                            </svg>
-                        </div>
-                        <span className="text-xs sm:text-sm font-semibold tracking-tight text-center">
-                            Please do not refresh or close window
-                        </span>
-                        <div className="shrink-0 flex items-center ml-0.5" title="Synchronizing status">
-                            <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
-                        </div>
+                {/* Warning Banner */}
+                <div className={`mt-8 w-full max-w-md mx-auto qf-fade-slide ${showBanner ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
+                    <div className="flex items-center justify-center gap-3 px-5 py-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm sm:text-base font-semibold shadow-sm">
+                        <svg className="w-5 h-5 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        <span>Please do not refresh or close window</span>
                     </div>
                 </div>
 
-            </main>
+                {/* Session Indicator */}
+                <div className={`mt-10 flex items-center justify-center gap-2 text-xs text-slate-400 font-mono tracking-wide qf-fade-slide ${showSession ? 'opacity-100' : 'opacity-0'}`}>
+                    <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span>STATUS: 410_QUOTA_REACHED &bull; RECORDED</span>
+                </div>
+
+            </div>
         </div>
     );
 };
